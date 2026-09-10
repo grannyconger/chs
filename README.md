@@ -4,7 +4,7 @@ Rock the Block travel itinerary as an offline-capable, mobile-first web app.
 
 ## Use it
 
-- **Live:** enable GitHub Pages (Settings → Pages → Deploy from branch → `main` / root). The app is served at `https://<user>.github.io/chs/`.
+- **Live:** <https://www.coachw.club/chs/> (GitHub Pages, `main` / root).
 - **Offline:** open the page once with a connection. A service worker caches every asset, so it then works with no signal. On a phone, use **Add to Home Screen** (iOS: Share → Add to Home Screen; Android/Chrome: the **Install app** button) for a full-screen, launchable copy.
 - **No build step.** Plain HTML, CSS, and JavaScript. Opening `index.html` directly in a browser also works (the service worker is skipped over `file://`, everything else runs).
 
