@@ -152,7 +152,8 @@
   :focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
 
   @media (max-width: 520px) {
-    .addr li { flex-direction: column; align-items: stretch; }
+    .addr li { flex-direction: column; align-items: stretch; gap: 12px; }
+    .addr .text { flex: 0 0 auto; }
     .addr .actions { width: 100%; }
     .addr .actions .button { flex: 1 1 auto; text-align: center; padding: 12px 10px; }
   }
