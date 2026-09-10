@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#00205b">
+<meta name="description" content="Rock the Block travel itinerary.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Rock the Block">
+<title>Rock the Block Itinerary</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root {
+    --paper:#F4F3EF; --navy:#00205b; --blue:#6495ed;
+    --text:#2E3949; --dim:#6B7686; --line:#D9D7D0; --white:#fff;
+    --athletics-teal:rgb(0,113,144);
+    --athletics-aqua:rgb(188,228,229);
+    --athletics-tan:rgb(194,174,147);
+    --athletics-gold:rgb(253,191,104);
+    --accent:#00205b; --accent-soft:rgba(0,32,91,0.08);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0; min-height: 100vh;
+    padding: 24px 0 48px;
+    padding: 24px 0 calc(48px + env(safe-area-inset-bottom));
+    background: var(--paper); color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex; align-items: flex-start; justify-content: center;
+  }
+
+  main { width: min(90%, 720px); }
+
+  .band { height: 8px; background: var(--accent); margin-bottom: 22px; }
+
+  h1 {
+    margin: 0; color: var(--navy);
+    font-size: clamp(2.6rem, 11vw, 5rem); line-height: 0.9;
+    letter-spacing: -0.05em; text-transform: uppercase;
+  }
+
+  .divider { width: 60px; height: 5px; margin: 22px 0 4px; background: var(--accent); }
+
+  /* Filter tabs */
+  .tabs {
+    display: flex; border-bottom: 2px solid var(--line);
+    margin: 26px 0 30px;
+    position: sticky; top: 0; z-index: 5;
+    background: var(--paper);
+  }
+  .tab {
+    flex: 1; padding: 14px 4px; margin-bottom: -2px;
+    border: none; border-bottom: 4px solid transparent; background: transparent;
+    color: var(--dim); font: bold 0.8rem Arial, Helvetica, sans-serif;
+    text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer;
+  }
+  .tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Day heading */
+  .day-label {
+    font: bold 0.8rem Arial, Helvetica, sans-serif;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent);
+    padding-bottom: 8px; border-bottom: 2px solid var(--line);
+    margin: 34px 0 16px;
+  }
+  .day:first-of-type .day-label { margin-top: 6px; }
+  .day-label .date { color: var(--dim); letter-spacing: 0.06em; }
+
+  /* Stop card */
+  .stop {
+    background: var(--white);
+    border: 2px solid var(--line); border-left: 4px solid var(--accent);
+    padding: 16px 18px; margin-bottom: 12px;
+  }
+  .stop .time {
+    font: bold 0.78rem Arial, Helvetica, sans-serif;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent);
+  }
+  .stop h2 {
+    margin: 6px 0 0; color: var(--navy);
+    font-size: clamp(1.15rem, 3.6vw, 1.4rem); line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .stop .place { margin: 8px 0 0; font-size: 1rem; color: var(--dim); }
+
+  .addr { list-style: none; margin: 14px 0 0; padding: 0; }
+  .addr li {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 10px 14px;
+    padding: 12px 0; border-top: 1px solid var(--line);
+  }
+  .addr li:last-child { border-bottom: 1px solid var(--line); }
+  .addr .text { flex: 1 1 220px; font-size: 0.95rem; line-height: 1.45; color: var(--text); }
+
+  .notes { list-style: none; margin: 14px 0 0; padding: 0; }
+  .notes li {
+    position: relative; padding: 9px 0 9px 18px;
+    font-size: 0.95rem; line-height: 1.5;
+    border-bottom: 1px solid var(--line);
+  }
+  .notes li:first-child { border-top: 1px solid var(--line); }
+  .notes li::before {
+    content: ""; position: absolute; left: 0; top: 16px;
+    width: 7px; height: 7px; background: var(--accent);
+  }
+
+  .button {
+    display: inline-block; padding: 12px 20px;
+    border: 2px solid var(--accent); background: transparent; color: var(--accent);
+    font: bold 0.82rem/1 Arial, Helvetica, sans-serif;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    text-decoration: none; cursor: pointer; white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .button:hover { background: var(--accent); color: var(--white); }
+
+  .foot {
+    margin-top: 30px; padding-top: 16px; border-top: 2px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center;
+  }
+  .foot .small { font-size: 0.9rem; color: var(--dim); margin: 0; }
+  #install { display: none; }
+
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+  @media (max-width: 520px) {
+    .addr li { flex-direction: column; align-items: stretch; }
+    .addr .button { width: 100%; text-align: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  @media print {
+    .tabs, .foot, .button { display: none !important; }
+    .day { display: block !important; }
+    body { padding: 0; display: block; }
+    main { width: 100%; }
+    .stop { break-inside: avoid; border-color: #000; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="band"></div>
+  <h1>Rock the<br>Block</h1>
+  <div class="divider"></div>
+
+  <div class="tabs" id="tabs" role="tablist" aria-label="Filter itinerary by day">
+    <button class="tab on" data-filter="all" role="tab" aria-selected="true">All</button>
+    <button class="tab" data-filter="fri" role="tab" aria-selected="false">Friday</button>
+    <button class="tab" data-filter="sat" role="tab" aria-selected="false">Saturday</button>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="foot">
+    <p class="small" id="status">Works offline once opened.</p>
+    <button class="button" id="install" type="button">Install app</button>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var DAYS = [
+    {
+      id: "fri",
+      label: "Friday",
+      date: "September 11, 2026",
+      stops: [
+        {
+          time: "10:30 AM – 11:00 AM",
+          title: "Meet at the GMC Bus",
+          place: "Greer Middle College Charter High School",
+          addresses: [
+            {
+              text: "138 West McElhaney Road, Taylors, SC 29687",
+              q: "Greer Middle College Charter High School, 138 West McElhaney Road, Taylors, SC 29687"
+            }
+          ],
+          notes: [
+            "Meet at the GMC bus 10:30 AM. Depart 11:00 AM.",
+            "Brunch on the bus — Biscuitville breakfast and beverages.",
+            "Approx. 4 hours to North Charleston: 3½ hours travel plus rest stops."
+          ]
+        },
+        {
+          time: "Arrive approx. 3:00 PM",
+          title: "Check Into the Hotel",
+          place: "Fairfield Inn & Suites by Marriott Charleston North / Ashley Phosphate",
+          addresses: [
+            {
+              text: "2540 North Forest Drive, North Charleston, SC 29420  ·  (843) 725-5400",
+              q: "Fairfield Inn & Suites Charleston North Ashley Phosphate, 2540 North Forest Drive, North Charleston, SC 29420"
+            }
+          ],
+          notes: [
+            "Unload the bus. Check into the hotel.",
+            "Hotel $1,350 — final price TBD."
+          ]
+        },
+        {
+          time: "3:30 PM – 4:00 PM",
+          title: "Isle of Palms — Front Beach",
+          place: "Isle of Palms County Park (14th Avenue)",
+          addresses: [
+            {
+              text: "1 14th Avenue, Isle of Palms, SC 29451",
+              q: "Isle of Palms County Park, 1 14th Avenue, Isle of Palms, SC 29451"
+            },
+            {
+              text: "Sub pickup — Publix at North Point, 1435 Ben Sawyer Boulevard, Mount Pleasant, SC 29464",
+              q: "Publix at North Point, 1435 Ben Sawyer Boulevard, Mount Pleasant, SC 29464"
+            }
+          ],
+          notes: [
+            "Depart the hotel 3:30 PM. 30 minutes to the beach.",
+            "On the beach. Bus parking and public restrooms available.",
+            "Dinner: Publix Pub Subs and sides. Publix at North Point is 13 minutes away — order online before arrival."
+          ]
+        },
+        {
+          time: "8:00 PM – 8:30 PM",
+          title: "Depart the Beach",
+          place: "Fairfield Inn & Suites by Marriott Charleston North / Ashley Phosphate",
+          addresses: [
+            {
+              text: "2540 North Forest Drive, North Charleston, SC 29420",
+              q: "Fairfield Inn & Suites Charleston North Ashley Phosphate, 2540 North Forest Drive, North Charleston, SC 29420"
+            }
+          ],
+          notes: [
+            "Depart the beach 8:00 PM. 30 minutes back to the Fairfield Inn.",
+            "Lights out and room checks 10:00 PM."
+          ]
+        }
+      ]
+    },
+    {
+      id: "sat",
+      label: "Saturday",
+      date: "September 12, 2026",
+      stops: [
+        {
+          time: "6:45 AM – 7:30 AM",
+          title: "Wake Ups & Breakfast",
+          place: "Fairfield Inn & Suites — hotel breakfast buffet in the lobby",
+          addresses: [
+            {
+              text: "2540 North Forest Drive, North Charleston, SC 29420",
+              q: "Fairfield Inn & Suites Charleston North Ashley Phosphate, 2540 North Forest Drive, North Charleston, SC 29420"
+            },
+            {
+              text: "Chick-fil-A, 4926 Centre Pointe Drive, North Charleston, SC 29418",
+              q: "Chick-fil-A, 4926 Centre Pointe Drive, North Charleston, SC 29418"
+            }
+          ],
+          notes: [
+            "Wake ups 6:45 AM. 45 minutes to eat. Depart the hotel 7:30 AM.",
+            "Hotel breakfast buffet in the lobby, plus Chick-fil-A.",
+            "Breakfast approx. $180."
+          ]
+        },
+        {
+          time: "8:00 AM – 9:00 AM",
+          title: "Rock the Block Invitational",
+          place: "North Charleston Aquatic Center",
+          addresses: [
+            {
+              text: "8610 Patriot Boulevard, North Charleston, SC 29420",
+              q: "North Charleston Aquatic Center, 8610 Patriot Boulevard, North Charleston, SC 29420"
+            }
+          ],
+          notes: [
+            "Depart the hotel 7:30 AM. Approx. 20 minutes to the pool.",
+            "Warm ups begin 8:00 AM. Coaches / Captains meeting 8:50 AM. Meet start 9:00 AM.",
+            "Two timers needed (GMC): 1. Shamblin  2. ____________",
+            "Entry fee $640 max — $20 per swimmer, paid by Coach Owens. 30 warm-up times / lanes confirmed as of 9/2."
+          ]
+        },
+        {
+          time: "1:00 PM – 1:30 PM",
+          title: "CiCi's Pizza",
+          place: "CiCi's Pizza",
+          addresses: [
+            {
+              text: "431 St. James Avenue, Goose Creek, SC 29445  ·  (843) 800-8787",
+              q: "CiCi's Pizza, 431 St. James Avenue, Goose Creek, SC 29445"
+            }
+          ],
+          notes: [
+            "Depart the Aquatic Center at meet conclusion, once swimmers have changed. Approx. 20 minutes.",
+            "Carb replenishment after fast swims.",
+            "Call ahead for reservations once head count and time are set, so CiCi's is ready for a large group.",
+            "Approx. $461.05."
+          ]
+        },
+        {
+          time: "Depart 3:00 PM · Arrive approx. 7:00 PM",
+          title: "Depart for GMC",
+          place: "Greer Middle College Charter High School",
+          addresses: [
+            {
+              text: "138 West McElhaney Road, Taylors, SC 29687",
+              q: "Greer Middle College Charter High School, 138 West McElhaney Road, Taylors, SC 29687"
+            }
+          ],
+          notes: [
+            "Depart CiCi's Pizza for GMC.",
+            "Approx. 4 hours: 3 hours travel plus rest stops."
+          ]
+        }
+      ]
+    }
+  ];
+
+  function el(tag, className, text) {
+    var n = document.createElement(tag);
+    if (className) n.className = className;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function directionsUrl(query) {
+    return "https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=" +
+      encodeURIComponent(query);
+  }
+
+  function renderStop(stop) {
+    var card = el("article", "stop");
+
+    card.appendChild(el("div", "time", stop.time));
+    card.appendChild(el("h2", null, stop.title));
+    if (stop.place) card.appendChild(el("p", "place", stop.place));
+
+    var addr = el("ul", "addr");
+    stop.addresses.forEach(function (a) {
+      var li = el("li");
+      li.appendChild(el("span", "text", a.text));
+      var btn = el("a", "button", "Directions");
+      btn.href = directionsUrl(a.q);
+      btn.target = "_blank";
+      btn.rel = "noopener";
+      btn.setAttribute("aria-label", "Directions to " + a.text);
+      li.appendChild(btn);
+      addr.appendChild(li);
+    });
+    card.appendChild(addr);
+
+    if (stop.notes && stop.notes.length) {
+      var notes = el("ul", "notes");
+      stop.notes.forEach(function (t) { notes.appendChild(el("li", null, t)); });
+      card.appendChild(notes);
+    }
+    return card;
+  }
+
+  function render() {
+    var app = document.getElementById("app");
+    app.textContent = "";
+    DAYS.forEach(function (day) {
+      var section = el("section", "day");
+      section.dataset.day = day.id;
+
+      var label = el("div", "day-label");
+      label.appendChild(el("span", null, day.label.toUpperCase()));
+      label.appendChild(document.createTextNode("  "));
+      label.appendChild(el("span", "date", "·  " + day.date));
+      section.appendChild(label);
+
+      day.stops.forEach(function (s) { section.appendChild(renderStop(s)); });
+      app.appendChild(section);
+    });
+  }
+
+  function applyFilter(filter) {
+    var sections = document.querySelectorAll(".day");
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      s.hidden = !(filter === "all" || s.dataset.day === filter);
+    }
+    var tabs = document.querySelectorAll(".tab");
+    for (var j = 0; j < tabs.length; j++) {
+      var on = tabs[j].dataset.filter === filter;
+      tabs[j].classList.toggle("on", on);
+      tabs[j].setAttribute("aria-selected", on ? "true" : "false");
+    }
+    try { localStorage.setItem("rtb-filter", filter); } catch (e) {}
+  }
+
+  function initTabs() {
+    var saved = "all";
+    try { saved = localStorage.getItem("rtb-filter") || "all"; } catch (e) {}
+    if (saved !== "fri" && saved !== "sat") saved = "all";
+
+    document.getElementById("tabs").addEventListener("click", function (ev) {
+      var t = ev.target.closest(".tab");
+      if (t) applyFilter(t.dataset.filter);
+    });
+    applyFilter(saved);
+  }
+
+  function initInstall() {
+    var btn = document.getElementById("install");
+    var deferred = null;
+
+    window.addEventListener("beforeinstallprompt", function (e) {
+      e.preventDefault();
+      deferred = e;
+      btn.style.display = "inline-block";
+    });
+    btn.addEventListener("click", function () {
+      if (!deferred) return;
+      deferred.prompt();
+      deferred.userChoice.then(function () {
+        deferred = null;
+        btn.style.display = "none";
+      });
+    });
+    window.addEventListener("appinstalled", function () {
+      btn.style.display = "none";
+    });
+
+    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    var standalone = window.navigator.standalone === true ||
+      (typeof window.matchMedia === "function" &&
+        window.matchMedia("(display-mode: standalone)").matches);
+    if (isIOS && !standalone) {
+      document.getElementById("status").textContent =
+        "Add to Home Screen: tap Share, then Add to Home Screen. Works offline.";
+    }
+  }
+
+  function initSW() {
+    if (!("serviceWorker" in navigator)) return;
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("service-worker.js").catch(function () {});
+    });
+  }
+
+  render();
+  initTabs();
+  initSW();
+  initInstall();
+})();
+</script>
+</body>
+</html>
