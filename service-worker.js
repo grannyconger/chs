@@ -1,5 +1,5 @@
 /* Rock the Block itinerary - offline service worker */
-var CACHE = "rtb-v1";
+var CACHE = "rtb-v2";
 
 var ASSETS = [
   "./",

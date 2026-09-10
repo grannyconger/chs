@@ -24,6 +24,15 @@
     --athletics-tan:rgb(194,174,147);
     --athletics-gold:rgb(253,191,104);
     --accent:#00205b; --accent-soft:rgba(0,32,91,0.08);
+
+    /* per-stop header accents, from the style guide accent palette */
+    --c-navy:#00205b;        --c-navy-soft:rgba(0,32,91,0.08);
+    --c-athteal:#007190;     --c-athteal-soft:rgba(0,113,144,0.08);
+    --c-teal:#0E6E66;        --c-teal-soft:rgba(14,110,102,0.08);
+    --c-royal:#1B4FA8;       --c-royal-soft:rgba(27,79,168,0.08);
+    --c-purple:#6B3FA0;      --c-purple-soft:rgba(107,63,160,0.08);
+    --c-red:#C0392B;         --c-red-soft:rgba(192,57,43,0.08);
+    --c-gold:rgb(253,191,104); --c-gold-soft:rgba(253,191,104,0.08);
   }
 
   * { box-sizing: border-box; }
@@ -80,20 +89,27 @@
   .stop {
     background: var(--white);
     border: 2px solid var(--line); border-left: 4px solid var(--accent);
-    padding: 16px 18px; margin-bottom: 12px;
+    padding: 0 18px 16px; margin-bottom: 12px;
+    --c: var(--c-navy); --c-soft: var(--c-navy-soft);
+  }
+  .stop .head {
+    margin: 0 -18px 14px; padding: 13px 18px 12px;
+    background: var(--c-soft);
+    border-top: 3px solid var(--c);
+    border-bottom: 1px solid var(--line);
   }
   .stop .time {
     font: bold 0.78rem Arial, Helvetica, sans-serif;
-    text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--c);
   }
   .stop h2 {
-    margin: 6px 0 0; color: var(--navy);
+    margin: 5px 0 0; color: var(--navy);
     font-size: clamp(1.15rem, 3.6vw, 1.4rem); line-height: 1.25;
     letter-spacing: -0.02em;
   }
-  .stop .place { margin: 8px 0 0; font-size: 1rem; color: var(--dim); }
+  .stop .place { margin: 7px 0 0; font-size: 1rem; color: var(--dim); }
 
-  .addr { list-style: none; margin: 14px 0 0; padding: 0; }
+  .addr { list-style: none; margin: 0; padding: 0; }
   .addr li {
     display: flex; flex-wrap: wrap; align-items: center;
     gap: 10px 14px;
@@ -101,6 +117,7 @@
   }
   .addr li:last-child { border-bottom: 1px solid var(--line); }
   .addr .text { flex: 1 1 220px; font-size: 0.95rem; line-height: 1.45; color: var(--text); }
+  .addr .actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
   .notes { list-style: none; margin: 14px 0 0; padding: 0; }
   .notes li {
@@ -123,6 +140,7 @@
     transition: background 0.15s ease, color 0.15s ease;
   }
   .button:hover { background: var(--accent); color: var(--white); }
+  .button.is-done { background: var(--accent); color: var(--white); }
 
   .foot {
     margin-top: 30px; padding-top: 16px; border-top: 2px solid var(--line);
@@ -135,7 +153,8 @@
 
   @media (max-width: 520px) {
     .addr li { flex-direction: column; align-items: stretch; }
-    .addr .button { width: 100%; text-align: center; }
+    .addr .actions { width: 100%; }
+    .addr .actions .button { flex: 1 1 auto; text-align: center; padding: 12px 10px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -143,11 +162,14 @@
   }
 
   @media print {
-    .tabs, .foot, .button { display: none !important; }
+    .tabs, .foot, .button, .addr .actions { display: none !important; }
     .day { display: block !important; }
     body { padding: 0; display: block; }
     main { width: 100%; }
     .stop { break-inside: avoid; border-color: #000; }
+    .stop .head {
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
   }
 </style>
 </head>
@@ -184,6 +206,7 @@
         {
           time: "10:30 AM – 11:00 AM",
           title: "Meet at the GMC Bus",
+          c: "--c-navy",
           place: "Greer Middle College Charter High School",
           addresses: [
             {
@@ -200,6 +223,7 @@
         {
           time: "Arrive approx. 3:00 PM",
           title: "Check Into the Hotel",
+          c: "--c-athteal",
           place: "Fairfield Inn & Suites by Marriott Charleston North / Ashley Phosphate",
           addresses: [
             {
@@ -215,6 +239,7 @@
         {
           time: "3:30 PM – 4:00 PM",
           title: "Isle of Palms — Front Beach",
+          c: "--c-teal",
           place: "Isle of Palms County Park (14th Avenue)",
           addresses: [
             {
@@ -235,6 +260,7 @@
         {
           time: "8:00 PM – 8:30 PM",
           title: "Depart the Beach",
+          c: "--c-royal",
           place: "Fairfield Inn & Suites by Marriott Charleston North / Ashley Phosphate",
           addresses: [
             {
@@ -257,6 +283,7 @@
         {
           time: "6:45 AM – 7:30 AM",
           title: "Wake Ups & Breakfast",
+          c: "--c-purple",
           place: "Fairfield Inn & Suites — hotel breakfast buffet in the lobby",
           addresses: [
             {
@@ -277,6 +304,7 @@
         {
           time: "8:00 AM – 9:00 AM",
           title: "Rock the Block Invitational",
+          c: "--c-red",
           place: "North Charleston Aquatic Center",
           addresses: [
             {
@@ -294,6 +322,7 @@
         {
           time: "1:00 PM – 1:30 PM",
           title: "CiCi's Pizza",
+          c: "--c-athteal",
           place: "CiCi's Pizza",
           addresses: [
             {
@@ -311,6 +340,7 @@
         {
           time: "Depart 3:00 PM · Arrive approx. 7:00 PM",
           title: "Depart for GMC",
+          c: "--c-navy",
           place: "Greer Middle College Charter High School",
           addresses: [
             {
@@ -339,23 +369,73 @@
       encodeURIComponent(query);
   }
 
+  function fallbackCopy(str, done) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = str;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "absolute";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      done();
+    } catch (e) {}
+  }
+
+  function copyText(str, btn) {
+    var done = function () {
+      btn.textContent = "Copied";
+      btn.classList.add("is-done");
+      clearTimeout(btn._t);
+      btn._t = setTimeout(function () {
+        btn.textContent = btn.dataset.label;
+        btn.classList.remove("is-done");
+      }, 1400);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(str).then(done, function () { fallbackCopy(str, done); });
+    } else {
+      fallbackCopy(str, done);
+    }
+  }
+
   function renderStop(stop) {
     var card = el("article", "stop");
+    if (stop.c) {
+      card.style.setProperty("--c", "var(" + stop.c + ")");
+      card.style.setProperty("--c-soft", "var(" + stop.c + "-soft)");
+    }
 
-    card.appendChild(el("div", "time", stop.time));
-    card.appendChild(el("h2", null, stop.title));
-    if (stop.place) card.appendChild(el("p", "place", stop.place));
+    var head = el("div", "head");
+    head.appendChild(el("div", "time", stop.time));
+    head.appendChild(el("h2", null, stop.title));
+    if (stop.place) head.appendChild(el("p", "place", stop.place));
+    card.appendChild(head);
 
     var addr = el("ul", "addr");
     stop.addresses.forEach(function (a) {
       var li = el("li");
       li.appendChild(el("span", "text", a.text));
-      var btn = el("a", "button", "Directions");
-      btn.href = directionsUrl(a.q);
-      btn.target = "_blank";
-      btn.rel = "noopener";
-      btn.setAttribute("aria-label", "Directions to " + a.text);
-      li.appendChild(btn);
+
+      var actions = el("div", "actions");
+
+      var copy = el("button", "button", "Copy");
+      copy.type = "button";
+      copy.dataset.label = "Copy";
+      copy.setAttribute("aria-label", "Copy address: " + a.q);
+      copy.addEventListener("click", function () { copyText(a.q, copy); });
+      actions.appendChild(copy);
+
+      var dir = el("a", "button", "Directions");
+      dir.href = directionsUrl(a.q);
+      dir.target = "_blank";
+      dir.rel = "noopener";
+      dir.setAttribute("aria-label", "Directions to " + a.text);
+      actions.appendChild(dir);
+
+      li.appendChild(actions);
       addr.appendChild(li);
     });
     card.appendChild(addr);
