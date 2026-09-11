@@ -149,6 +149,39 @@
   .foot .small { font-size: 0.9rem; color: var(--dim); margin: 0; }
   #install { display: none; }
 
+  /* Coaches: rooming list */
+  .room-group-label {
+    margin: 14px 0 6px; font: bold 0.78rem Arial, Helvetica, sans-serif;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim);
+  }
+  .room-groups > .room-group-label:first-child { margin-top: 0; }
+  .rooms { list-style: none; margin: 0; padding: 0; }
+  .rooms li {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 10px 0; border-top: 1px solid var(--line);
+  }
+  .rooms li:last-child { border-bottom: 1px solid var(--line); }
+  .room-num {
+    flex: 0 0 auto; min-width: 44px;
+    font: bold 1rem Arial, Helvetica, sans-serif; color: var(--c);
+  }
+  .room-names { flex: 1; font-size: 0.95rem; color: var(--text); }
+
+  /* Coaches: password gate */
+  .coaches-gate {
+    background: var(--white); border: 2px solid var(--line); border-left: 4px solid var(--accent);
+    padding: 22px 18px; margin-bottom: 12px; text-align: center;
+  }
+  .coaches-gate .gate-label { margin: 0 0 14px; color: var(--text); font-size: 0.95rem; }
+  .coaches-gate form { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .coaches-gate input[type="password"] {
+    flex: 1 1 200px; max-width: 260px; padding: 12px 14px;
+    border: 2px solid var(--line); font: 1rem Arial, Helvetica, sans-serif;
+    background: var(--white); color: var(--text);
+  }
+  .coaches-gate input[type="password"]:focus { border-color: var(--accent); outline: none; }
+  .gate-error { margin: 12px 0 0; color: var(--c-red); font-size: 0.9rem; }
+
   :focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
 
   @media (max-width: 520px) {
@@ -156,6 +189,10 @@
     .addr .text { flex: 0 0 auto; }
     .addr .actions { width: 100%; }
     .addr .actions .button { flex: 1 1 auto; text-align: center; padding: 12px 10px; }
+    .tabs { flex-wrap: wrap; }
+    .tab { flex: 1 1 auto; min-width: 30%; font-size: 0.7rem; padding: 12px 2px; }
+    .heat-table td.name { font-size: 0.82rem; }
+    .heat-table td.time-cell { width: 62px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -163,14 +200,75 @@
   }
 
   @media print {
-    .tabs, .foot, .button, .addr .actions { display: none !important; }
+    .tabs, .foot, .button, .addr .actions, .coaches-gate { display: none !important; }
     .day { display: block !important; }
+    .day[data-day="coaches"] { display: none !important; }
     body { padding: 0; display: block; }
     main { width: 100%; }
     .stop { break-inside: avoid; border-color: #000; }
     .stop .head {
       -webkit-print-color-adjust: exact; print-color-adjust: exact;
     }
+  }
+
+  /* Heat sheet & seating (public) */
+  .meet-note { margin: -4px 0 18px; font-size: 0.9rem; color: var(--dim); }
+  .sched-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .sched-table td { padding: 8px 4px; border-top: 1px solid var(--line); font-size: 0.85rem; vertical-align: top; }
+  .sched-table tr:last-child td { border-bottom: 1px solid var(--line); }
+  .sched-table td.t { color: var(--dim); white-space: nowrap; width: 82px; }
+  .sched-table td.h { color: var(--dim); white-space: nowrap; text-align: right; }
+  .sched-table tr.brk td { color: var(--dim); font-style: italic; background: var(--accent-soft); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 20px; font-size: 0.8rem; color: var(--dim); }
+  .legend b { color: var(--text); }
+
+  .event-block {
+    background: var(--white); border: 2px solid var(--line); border-left: 4px solid var(--accent);
+    margin-bottom: 10px; padding: 0 16px 12px;
+  }
+  .event-block summary {
+    cursor: pointer; list-style: none; margin: 0 -16px 10px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: var(--accent-soft); border-bottom: 1px solid var(--line);
+  }
+  .event-block summary::-webkit-details-marker { display: none; }
+  .event-block summary::before { content: "\25B8"; color: var(--accent); font-size: 0.75rem; width: 0.8em; }
+  .event-block[open] summary::before { content: "\25BE"; }
+  .ev-num { font: bold 0.78rem Arial, Helvetica, sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
+  .ev-name { flex: 1 1 auto; font-size: 0.95rem; font-weight: bold; color: var(--navy); }
+  .gmc-badge {
+    background: var(--athletics-gold); color: var(--navy); font: bold 0.7rem Arial, Helvetica, sans-serif;
+    padding: 3px 8px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap;
+  }
+  .heat-label {
+    margin: 14px 0 6px; font: bold 0.75rem Arial, Helvetica, sans-serif;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim);
+  }
+  .event-block > .heat-label:first-of-type { margin-top: 0; }
+  .heat-table, .lane-table, .seat-table { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
+  .heat-table td, .lane-table td, .seat-table td, .seat-table th {
+    padding: 6px 4px; border-top: 1px solid var(--line); font-size: 0.88rem;
+  }
+  .heat-table tr:last-child td, .lane-table tr:last-child td, .seat-table tr:last-child td { border-bottom: 1px solid var(--line); }
+  .heat-table td.lane, .lane-table td.lane-num { width: 24px; color: var(--dim); text-align: center; }
+  .heat-table td.name { color: var(--text); }
+  .heat-table td.team-cell { width: 52px; }
+  .team-code { font: bold 0.78rem Arial, Helvetica, sans-serif; color: var(--dim); }
+  .heat-table td.time-cell { width: 74px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text); }
+  tr.gmc-row { background: rgba(253,191,104,0.16); }
+  tr.gmc-row td { font-weight: bold; color: var(--navy); }
+  tr.gmc-row .team-code { color: var(--navy); }
+
+  .lane-cols { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
+  .lane-table-wrap { flex: 1 1 200px; min-width: 170px; }
+  .lane-title {
+    margin: 0 0 6px; font: bold 0.75rem Arial, Helvetica, sans-serif;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim);
+  }
+  .seat-table th {
+    text-align: left; font: bold 0.72rem Arial, Helvetica, sans-serif; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--dim); padding-bottom: 8px; border-bottom: 2px solid var(--line);
   }
 </style>
 </head>
@@ -184,9 +282,67 @@
     <button class="tab on" data-filter="all" role="tab" aria-selected="true">All</button>
     <button class="tab" data-filter="fri" role="tab" aria-selected="false">Friday</button>
     <button class="tab" data-filter="sat" role="tab" aria-selected="false">Saturday</button>
+    <button class="tab" data-filter="heats" role="tab" aria-selected="false">Heats</button>
+    <button class="tab" data-filter="seating" role="tab" aria-selected="false">Seating</button>
+    <button class="tab" data-filter="coaches" role="tab" aria-selected="false">Coaches</button>
   </div>
 
   <div id="app"></div>
+
+  <div class="day" data-day="heats" hidden><div id="heats-app"></div></div>
+  <div class="day" data-day="seating" hidden><div id="seating-app"></div></div>
+
+  <div id="coaches-gate" class="coaches-gate" hidden>
+    <p class="gate-label">Enter the coaches password to view this tab.</p>
+    <form id="coaches-form" autocomplete="off">
+      <input type="password" id="coaches-pass" name="coaches-pass" placeholder="Password" autocomplete="off">
+      <button type="submit" class="button">Unlock</button>
+    </form>
+    <p class="gate-error" id="coaches-error" hidden>Incorrect password.</p>
+  </div>
+
+  <div class="day" data-day="coaches" hidden>
+    <div class="day-label"><span>COACHES</span></div>
+
+    <article class="stop" style="--c: var(--c-red); --c-soft: var(--c-red-soft);">
+      <div class="head">
+        <div class="time">Rooming List</div>
+        <h2>Room Assignments</h2>
+      </div>
+      <div class="room-groups">
+        <h3 class="room-group-label">Girls</h3>
+        <ul class="rooms">
+          <li><span class="room-num">320</span><span class="room-names">Brielle, Abigale, April</span></li>
+          <li><span class="room-num">318</span><span class="room-names">Nora, Mary Beth, Marlowe</span></li>
+          <li><span class="room-num">319</span><span class="room-names">Charlotte, Alice, Maggie</span></li>
+        </ul>
+        <h3 class="room-group-label">Boys</h3>
+        <ul class="rooms">
+          <li><span class="room-num">405</span><span class="room-names">Lucas, Luke, Mac, Freddie</span></li>
+          <li><span class="room-num">422</span><span class="room-names">Andy, Justen, Will B, Lance</span></li>
+          <li><span class="room-num">420</span><span class="room-names">Ashton, Asa, Wyatt, Evan</span></li>
+          <li><span class="room-num">419</span><span class="room-names">Jake, Hunter, Lennon, Isaac</span></li>
+          <li><span class="room-num">414</span><span class="room-names">Aidyn, Will M, Charlie</span></li>
+          <li><span class="room-num">418</span><span class="room-names">Kanius, Derian, Sebi</span></li>
+          <li><span class="room-num">417</span><span class="room-names">Coach Weaver</span></li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="stop" style="--c: var(--c-purple); --c-soft: var(--c-purple-soft);">
+      <div class="head">
+        <div class="time">Medication</div>
+        <h2>Students on Medication</h2>
+      </div>
+      <ul class="notes">
+        <li>Aidyn</li>
+        <li>Luke</li>
+        <li>Brielle</li>
+        <li>Kanius</li>
+      </ul>
+      <p class="place" style="margin-top:14px;">To be facilitated by Coach Weaver.</p>
+    </article>
+  </div>
 
   <div class="foot">
     <p class="small" id="status">Works offline once opened.</p>
@@ -467,12 +623,407 @@
     });
   }
 
+  var COACHES_PASSWORD = "gozers22";
+
+  function isCoachesAuthed() {
+    try { return sessionStorage.getItem("rtb-coaches-authed") === "1"; } catch (e) { return false; }
+  }
+
+  function setCoachesAuthed() {
+    try { sessionStorage.setItem("rtb-coaches-authed", "1"); } catch (e) {}
+  }
+
+  var ITINERARY_DAYS = ["fri", "sat"];
+
+
+  var TEAM_NAMES = {
+    ACM: "Academic Magnet High School",
+    ASR: "Ashley Ridge High School",
+    BEY: "Berkeley High School",
+    CBY: "Cane Bay High School",
+    FOD: "Fort Dorchester High School",
+    GMC: "Greer Middle College Charter High School",
+    HAN: "Hanahan High School",
+    JIS: "James Island Charter High School",
+    NMB: "North Myrtle Beach High School",
+    OCA: "Oceanside Collegiate Academy",
+    PSM: "Philip Simmons High School",
+    STL: "Stall High School",
+    SUM: "Summerville High School"
+  };
+
+  var HEATSHEET = {
+    schedule: [
+      { time: "9:00 AM", evt: 1, name: "Girls Open/Senior 200 Medley Relay", heats: 2, entries: 16 },
+      { time: "9:05 AM", evt: 2, name: "Boys Open/Senior 200 Medley Relay", heats: 2, entries: 15 },
+      { time: "9:11 AM", evt: 3, name: "Girls Open/Senior 200 Freestyle", heats: 2, entries: 20 },
+      { time: "9:17 AM", evt: 4, name: "Boys Open/Senior 200 Freestyle", heats: 2, entries: 18 },
+      { time: "9:23 AM", evt: 5, name: "Girls Open/Senior 200 Medley", heats: 3, entries: 21 },
+      { time: "9:33 AM", evt: 6, name: "Boys Open/Senior 200 Medley", heats: 2, entries: 16 },
+      { time: "9:40 AM", evt: 7, name: "Girls Open/Senior 50 Freestyle", heats: 9, entries: 81 },
+      { time: "9:49 AM", evt: 8, name: "Boys Open/Senior 50 Freestyle", heats: 9, entries: 90 },
+      { time: "9:58 AM", brk: "Break \u2014 15 min" },
+      { time: "10:13 AM", evt: 9, name: "Girls Open/Senior 100 Butterfly", heats: 3, entries: 22 },
+      { time: "10:19 AM", evt: 10, name: "Boys Open/Senior 100 Butterfly", heats: 3, entries: 23 },
+      { time: "10:24 AM", evt: 11, name: "Girls Open/Senior 100 Freestyle", heats: 7, entries: 70 },
+      { time: "10:37 AM", evt: 12, name: "Boys Open/Senior 100 Freestyle", heats: 8, entries: 80 },
+      { time: "10:51 AM", evt: 13, name: "Girls Open/Senior 500 Freestyle", heats: 2, entries: 17 },
+      { time: "11:05 AM", evt: 14, name: "Boys Open/Senior 500 Freestyle", heats: 2, entries: 14 },
+      { time: "11:19 AM", evt: 15, name: "Girls Open/Senior 200 Freestyle Relay", heats: 2, entries: 17 },
+      { time: "11:24 AM", evt: 16, name: "Boys Open/Senior 200 Freestyle Relay", heats: 2, entries: 14 },
+      { time: "11:29 AM", brk: "Break \u2014 10 min" },
+      { time: "11:39 AM", evt: 17, name: "Girls Open/Senior 100 Backstroke", heats: 3, entries: 24 },
+      { time: "11:45 AM", evt: 18, name: "Boys Open/Senior 100 Backstroke", heats: 3, entries: 26 },
+      { time: "11:52 AM", evt: 19, name: "Girls Open/Senior 100 Breaststroke", heats: 3, entries: 28 },
+      { time: "11:58 AM", evt: 20, name: "Boys Open/Senior 100 Breaststroke", heats: 3, entries: 21 },
+      { time: "12:04 PM", evt: 21, name: "Girls Open/Senior 400 Freestyle Relay", heats: 2, entries: 12 },
+      { time: "12:14 PM", evt: 22, name: "Boys Open/Senior 400 Freestyle Relay", heats: 2, entries: 11 },
+    ],
+    events: [
+      { num: 1, name: "Girls Open/Senior 200 Medley Relay", heats: [
+        { label: "1 of 2", entries: [{l:"3",n:"Academic Magnet High School B",t:"ACM",s:"2:25.97"}, {l:"4",n:"North Myrtle Beach B",t:"NMB",s:"2:20.21"}, {l:"5",n:"Greer Middle College Charter H A",t:"GMC",s:"2:11.47"}, {l:"6",n:"Academic Magnet High School A",t:"ACM",s:"2:18.58"}, {l:"7",n:"James Island Charter HS B",t:"JIS",s:"2:23.96"}, {l:"8",n:"Oceanside Collegiate Academy B",t:"OCA",s:"NT"}] },
+        { label: "2 of 2", entries: [{l:"1",n:"Summerville High School A",t:"SUM",s:"2:09.31"}, {l:"2",n:"Ashley Ridge High School B",t:"ASR",s:"2:07.89"}, {l:"3",n:"Philip Simmons High School A",t:"PSM",s:"2:02.98"}, {l:"4",n:"North Myrtle Beach A",t:"NMB",s:"1:59.63"}, {l:"5",n:"Cane Bay High School Swimming A",t:"CBY",s:"1:50.60"}, {l:"6",n:"Oceanside Collegiate Academy A",t:"OCA",s:"1:59.34"}, {l:"7",n:"Ashley Ridge High School A",t:"ASR",s:"2:00.15"}, {l:"8",n:"Cane Bay High School Swimming B",t:"CBY",s:"2:06.16"}, {l:"9",n:"Fort Dorchester High School A",t:"FOD",s:"2:08.00"}, {l:"10",n:"James Island Charter HS A",t:"JIS",s:"2:09.37"}] },
+      ] },
+      { num: 2, name: "Boys Open/Senior 200 Medley Relay", heats: [
+        { label: "1 of 2", entries: [{l:"3",n:"James Island Charter HS B",t:"JIS",s:"2:24.49"}, {l:"4",n:"Greer Middle College Charter H B",t:"GMC",s:"2:01.72"}, {l:"5",n:"James Island Charter HS A",t:"JIS",s:"1:57.07"}, {l:"6",n:"Summerville High School B",t:"SUM",s:"2:01.67"}, {l:"7",n:"Cane Bay High School Swimming B",t:"CBY",s:"2:06.44"}] },
+        { label: "2 of 2", entries: [{l:"1",n:"Greer Middle College Charter H A",t:"GMC",s:"1:53.44"}, {l:"2",n:"Oceanside Collegiate Academy A",t:"OCA",s:"1:51.36"}, {l:"3",n:"Fort Dorchester High School A",t:"FOD",s:"1:49.02"}, {l:"4",n:"Ashley Ridge High School B",t:"ASR",s:"1:44.16"}, {l:"5",n:"Ashley Ridge High School A",t:"ASR",s:"1:38.02"}, {l:"6",n:"Academic Magnet High School A",t:"ACM",s:"1:43.10"}, {l:"7",n:"Summerville High School A",t:"SUM",s:"1:48.98"}, {l:"8",n:"Academic Magnet High School B",t:"ACM",s:"1:50.97"}, {l:"9",n:"Philip Simmons High School A",t:"PSM",s:"1:52.95"}, {l:"10",n:"Cane Bay High School Swimming A",t:"CBY",s:"1:54.00"}] },
+      ] },
+      { num: 3, name: "Girls Open/Senior 200 Freestyle", heats: [
+        { label: "1 of 2", entries: [{l:"1",n:"Hill, Lilianna",t:"HAN",s:"NT"}, {l:"2",n:"Tang, Catherine",t:"ACM",s:"NT"}, {l:"3",n:"Byerly, Lydia",t:"SUM",s:"2:42.81"}, {l:"4",n:"Wallman, Vander",t:"OCA",s:"2:36.19"}, {l:"5",n:"Leonard, Haley",t:"FOD",s:"2:34.30"}, {l:"6",n:"Crawford, Lorelie",t:"ASR",s:"2:34.56"}, {l:"7",n:"Lindblad, Alice",t:"GMC",s:"2:38.56"}, {l:"8",n:"Sheridan, Darby",t:"JIS",s:"2:51.30"}, {l:"9",n:"Moseley, Brynlee",t:"SUM",s:"NT"}, {l:"10",n:"Patterson, Abbigale",t:"GMC",s:"NT"}] },
+        { label: "2 of 2", entries: [{l:"1",n:"Williams, Brielle",t:"GMC",s:"2:27.93"}, {l:"2",n:"Briggs, Emma",t:"CBY",s:"2:26.32"}, {l:"3",n:"Christie, Aria",t:"ASR",s:"2:21.70"}, {l:"4",n:"Baker, Maryella",t:"NMB",s:"2:09.17"}, {l:"5",n:"Bonacci, Emily",t:"ASR",s:"2:00.78"}, {l:"6",n:"Gwisc, Whitney",t:"ACM",s:"2:00.94"}, {l:"7",n:"Watts, Riley",t:"ASR",s:"2:15.05"}, {l:"8",n:"Tatzel, Tiffani",t:"ACM",s:"2:25.11"}, {l:"9",n:"Bowers, Finley",t:"ACM",s:"2:27.55"}, {l:"10",n:"Baeli, Christiana",t:"NMB",s:"2:32.67"}] },
+      ] },
+      { num: 4, name: "Boys Open/Senior 200 Freestyle", heats: [
+        { label: "1 of 2", entries: [{l:"2",n:"Winograd, Bradley",t:"PSM",s:"2:29.87"}, {l:"3",n:"Hovey, Gibson",t:"CBY",s:"2:23.81"}, {l:"4",n:"Clair, Ian",t:"ACM",s:"2:10.39"}, {l:"5",n:"Koster, Alex",t:"ACM",s:"2:09.46"}, {l:"6",n:"Parnell, Sawyer",t:"NMB",s:"2:09.95"}, {l:"7",n:"Rhem, Thad",t:"JIS",s:"2:12.55"}, {l:"8",n:"Fehr, Will",t:"JIS",s:"2:27.12"}, {l:"9",n:"George, Wyatt",t:"GMC",s:"NT"}] },
+        { label: "2 of 2", entries: [{l:"1",n:"Breneman, Ashton",t:"GMC",s:"2:05.85"}, {l:"2",n:"Collier, Wade",t:"SUM",s:"2:03.85"}, {l:"3",n:"Thurmond, Hollis",t:"ACM",s:"2:00.33"}, {l:"4",n:"Applegate, Dominik",t:"ASR",s:"1:58.12"}, {l:"5",n:"Routhier, Finn",t:"ASR",s:"1:53.91"}, {l:"6",n:"Jarrard, Jackson",t:"ASR",s:"1:54.53"}, {l:"7",n:"Cheney, Caleb",t:"ASR",s:"2:00.02"}, {l:"8",n:"Pohl, Koa",t:"SUM",s:"2:03.67"}, {l:"9",n:"Moran, Will",t:"GMC",s:"2:03.88"}, {l:"10",n:"Sabbagh, Vincent",t:"ACM",s:"2:09.06"}] },
+      ] },
+      { num: 5, name: "Girls Open/Senior 200 Medley", heats: [
+        { label: "1 of 3", entries: [{l:"4",n:"Frear, Kaitlyn",t:"JIS",s:"NT"}, {l:"5",n:"Crawford, Mackenzie",t:"ASR",s:"3:13.76"}, {l:"6",n:"Riley, McKenzie",t:"SUM",s:"NT"}] },
+        { label: "2 of 3", entries: [{l:"2",n:"Garcia, Vanessa",t:"ASR",s:"2:52.27"}, {l:"3",n:"Seabrooks, Isaa",t:"SUM",s:"2:49.62"}, {l:"4",n:"Baldwin, Kate",t:"OCA",s:"2:38.27"}, {l:"5",n:"Maggio, Angela",t:"NMB",s:"2:34.73"}, {l:"6",n:"Cardella, Priya",t:"ACM",s:"2:37.91"}, {l:"7",n:"Noble, Ella",t:"CBY",s:"2:42.42"}, {l:"8",n:"Causey, Camila",t:"ACM",s:"2:50.17"}, {l:"9",n:"Wagner, Annabelle",t:"JIS",s:"2:57.84"}] },
+        { label: "3 of 3", entries: [{l:"1",n:"Bonavita, Charlee",t:"ACM",s:"2:33.82"}, {l:"2",n:"Kelly, Ashlynn",t:"SUM",s:"2:32.79"}, {l:"3",n:"Schady, Julia",t:"ACM",s:"2:31.26"}, {l:"4",n:"Lee, Eryn",t:"OCA",s:"2:29.93"}, {l:"5",n:"Noble, Ava",t:"CBY",s:"2:26.17"}, {l:"6",n:"Kabealo, Harper",t:"ASR",s:"2:28.48"}, {l:"7",n:"DeGeorge, Eva",t:"CBY",s:"2:30.92"}, {l:"8",n:"Rosiak, Libby",t:"PSM",s:"2:31.80"}, {l:"9",n:"Gerber, Arabella",t:"ASR",s:"2:33.63"}, {l:"10",n:"Patterson, Maggie",t:"GMC",s:"2:34.64"}] },
+      ] },
+      { num: 6, name: "Boys Open/Senior 200 Medley", heats: [
+        { label: "1 of 2", entries: [{l:"3",n:"Guare, Declan",t:"SUM",s:"2:44.70"}, {l:"4",n:"Mullen, Matthew",t:"ACM",s:"2:34.97"}, {l:"5",n:"Wilber, Knox",t:"NMB",s:"2:24.60"}, {l:"6",n:"De Dios, Iain",t:"CBY",s:"2:33.25"}, {l:"7",n:"Mester, Ethan",t:"PSM",s:"2:37.67"}, {l:"8",n:"Velez, Sebi",t:"GMC",s:"NT"}] },
+        { label: "2 of 2", entries: [{l:"1",n:"Hurlbert, John",t:"ASR",s:"2:22.15"}, {l:"2",n:"De Castro, Ricardo",t:"CBY",s:"2:17.22"}, {l:"3",n:"Connors, FInley",t:"ACM",s:"2:12.31"}, {l:"4",n:"Aikman, Keith",t:"ACM",s:"2:04.44"}, {l:"5",n:"Gladis, Karter",t:"ASR",s:"2:00.24"}, {l:"6",n:"Patterson, Logan",t:"ACM",s:"2:03.11"}, {l:"7",n:"Ruby, Nicholas",t:"PSM",s:"2:10.99"}, {l:"8",n:"OKeefe, Owen",t:"ASR",s:"2:14.33"}, {l:"9",n:"George, Hank",t:"ASR",s:"2:19.59"}, {l:"10",n:"Shamblin, Hunter",t:"GMC",s:"2:22.56"}] },
+      ] },
+      { num: 7, name: "Girls Open/Senior 50 Freestyle", heats: [
+        { label: "1 of 9", entries: [{l:"4",n:"Rankin, Marlowe",t:"GMC",s:"37.97S"}, {l:"5",n:"Lee, Jackie",t:"STL",s:"50.20"}, {l:"6",n:"Williams, Brielle",t:"GMC",s:"32.21S"}] },
+        { label: "2 of 9", entries: [{l:"2",n:"Rachman, Vivian",t:"ACM",s:"39.24"}, {l:"3",n:"Converse, April",t:"GMC",s:"38.43"}, {l:"4",n:"Rachman, Fiona",t:"ACM",s:"37.61"}, {l:"5",n:"Goodwin, Molly",t:"ACM",s:"37.04"}, {l:"6",n:"Smith, Hadley",t:"ASR",s:"37.04"}, {l:"7",n:"White, Livy",t:"OCA",s:"37.76"}, {l:"8",n:"Wagner, Lillie",t:"JIS",s:"39.20"}, {l:"9",n:"Ellman, Jackie",t:"STL",s:"41.50"}] },
+        { label: "3 of 9", entries: [{l:"1",n:"Marchenko, Natasha",t:"ASR",s:"35.58"}, {l:"2",n:"Silky, Madeline",t:"ASR",s:"35.41"}, {l:"3",n:"Cushing, Savannah",t:"HAN",s:"34.75"}, {l:"4",n:"Sheridan, Darby",t:"JIS",s:"34.02"}, {l:"5",n:"Osgood, Bella",t:"ACM",s:"33.61"}, {l:"6",n:"Hayward, London",t:"BEY",s:"33.84"}, {l:"7",n:"Harris, Meira",t:"ACM",s:"34.44"}, {l:"8",n:"Poole, Emmy",t:"PSM",s:"35.28"}, {l:"9",n:"Sims, Penny",t:"ACM",s:"35.55"}, {l:"10",n:"Murphy, Natalie",t:"ASR",s:"36.82"}] },
+        { label: "4 of 9", entries: [{l:"1",n:"Crosby, Annabelle",t:"HAN",s:"33.53"}, {l:"2",n:"Traugott, Brooks",t:"ACM",s:"33.40"}, {l:"3",n:"Mester, Maddie",t:"PSM",s:"33.03"}, {l:"4",n:"Wheelon, Elizabeth",t:"ACM",s:"33.01"}, {l:"5",n:"Crawford, Mackenzie",t:"ASR",s:"32.88"}, {l:"6",n:"Oakman, Maggie",t:"ACM",s:"32.91"}, {l:"7",n:"Falconer, Sophia",t:"CBY",s:"33.01"}, {l:"8",n:"Kraft, Scarlett",t:"JIS",s:"33.09"}, {l:"9",n:"Landingham, Julia",t:"CBY",s:"33.41"}, {l:"10",n:"Barber, Catherine",t:"ACM",s:"33.58"}] },
+        { label: "5 of 9", entries: [{l:"1",n:"Staub, Anae",t:"FOD",s:"32.77"}, {l:"2",n:"Trezies, Elin",t:"ACM",s:"32.57"}, {l:"3",n:"Truman, Betsy",t:"JIS",s:"32.14"}, {l:"4",n:"Parcel, Ella",t:"NMB",s:"32.12"}, {l:"5",n:"Hibler, Arlyn",t:"ACM",s:"31.89"}, {l:"6",n:"Hills, MJ",t:"ASR",s:"31.99"}, {l:"7",n:"Soler, Eleanor",t:"ACM",s:"32.14"}, {l:"8",n:"Grimsley, Kendall",t:"ACM",s:"32.47"}, {l:"9",n:"Sprouse, Elizabeth",t:"ACM",s:"32.66"}, {l:"10",n:"Dutrow, Murphy",t:"JIS",s:"32.84"}] },
+        { label: "6 of 9", entries: [{l:"1",n:"Hinkle, Jillian",t:"CBY",s:"31.87"}, {l:"2",n:"Gibson, Madison",t:"FOD",s:"31.59"}, {l:"3",n:"Hyatt-Eakes, Pluma",t:"ACM",s:"31.46"}, {l:"4",n:"Pertuz, Jaidelyn",t:"ASR",s:"31.14"}, {l:"5",n:"Case, Addison",t:"SUM",s:"30.57"}, {l:"6",n:"Yearby, Magdiel",t:"CBY",s:"31.00"}, {l:"7",n:"Leonardi, Willa",t:"JIS",s:"31.15"}, {l:"8",n:"Moree, Lililana",t:"ASR",s:"31.49"}, {l:"9",n:"Chrien, Laura",t:"FOD",s:"31.74"}, {l:"10",n:"Hamlett, Mary Beth",t:"GMC",s:"31.87"}] },
+        { label: "7 of 9", entries: [{l:"1",n:"Burch, Ellieotte",t:"JIS",s:"30.45"}, {l:"2",n:"Yatagan, Ayla",t:"JIS",s:"30.41"}, {l:"3",n:"Gillespie, Elsie",t:"ACM",s:"30.30"}, {l:"4",n:"Smith, Lainee",t:"NMB",s:"30.22"}, {l:"5",n:"Childers, Katie",t:"ACM",s:"29.73"}, {l:"6",n:"McManus, Raegan",t:"FOD",s:"29.88"}, {l:"7",n:"Clark, Mercedes",t:"ACM",s:"30.28"}, {l:"8",n:"Ballenger, Alex",t:"OCA",s:"30.35"}, {l:"9",n:"Babb, Michela",t:"CBY",s:"30.41"}, {l:"10",n:"Crosby, Aldret",t:"SUM",s:"30.50"}] },
+        { label: "8 of 9", entries: [{l:"1",n:"Johnson, Kaleigh",t:"JIS",s:"29.03"}, {l:"2",n:"Edwards, Nora",t:"GMC",s:"28.69"}, {l:"3",n:"Anderson, Savannah",t:"ASR",s:"28.01"}, {l:"4",n:"Arnold, Bowen",t:"ACM",s:"27.87"}, {l:"5",n:"Ansley, Mia",t:"ACM",s:"27.41"}, {l:"6",n:"Arntz, Lila Kate",t:"SUM",s:"27.43"}, {l:"7",n:"Walsh, Robyn",t:"NMB",s:"27.96"}, {l:"8",n:"Heinemann, Sarah Gray",t:"ACM",s:"28.62"}, {l:"9",n:"Menken, Rose",t:"FOD",s:"29.02"}, {l:"10",n:"Shmilovich, Nurit",t:"ACM",s:"29.46"}] },
+        { label: "9 of 9", entries: [{l:"1",n:"Reilly, Dakota",t:"OCA",s:"26.98"}, {l:"2",n:"Goad, Charlotte",t:"GMC",s:"26.86"}, {l:"3",n:"Torek, Avery",t:"FOD",s:"26.12"}, {l:"4",n:"Muldrow, Jayla",t:"BEY",s:"25.75"}, {l:"5",n:"Stephen, Mia",t:"CBY",s:"25.52"}, {l:"6",n:"Wilson, Ellis",t:"HAN",s:"25.60"}, {l:"7",n:"Walker, Kail",t:"ASR",s:"26.09"}, {l:"8",n:"Connors, Charlotte",t:"ACM",s:"26.43"}, {l:"9",n:"Holland, Reese",t:"OCA",s:"26.91"}, {l:"10",n:"Martin, Anika",t:"ACM",s:"27.19"}] },
+      ] },
+      { num: 8, name: "Boys Open/Senior 50 Freestyle", heats: [
+        { label: "1 of 9", entries: [{l:"1",n:"Taylor, Landon",t:"OCA",s:"NT"}, {l:"2",n:"White, Jake",t:"GMC",s:"38.82S"}, {l:"3",n:"Hall, Deno",t:"GMC",s:"33.60S"}, {l:"4",n:"Butler, Mac",t:"GMC",s:"27.82S"}, {l:"5",n:"Baxley, Harry",t:"ACM",s:"40.02"}, {l:"6",n:"Payne, Malcolm",t:"JIS",s:"40.24"}, {l:"7",n:"Horne, Justen",t:"GMC",s:"33.37S"}, {l:"8",n:"Ball, Evan",t:"GMC",s:"36.18S"}, {l:"9",n:"Herschler, Elijah",t:"CBY",s:"NT"}, {l:"10",n:"Sease, Henry",t:"ACM",s:"NT"}] },
+        { label: "2 of 9", entries: [{l:"1",n:"Smith, Lyndon",t:"ACM",s:"36.31"}, {l:"2",n:"Salle, Luke",t:"GMC",s:"34.44"}, {l:"3",n:"Rutland, Elliot",t:"OCA",s:"33.51"}, {l:"4",n:"Garcia, Landon",t:"FOD",s:"33.03"}, {l:"5",n:"Yosinski, Lucas",t:"ASR",s:"32.41"}, {l:"6",n:"Miner, Karsten",t:"ACM",s:"32.87"}, {l:"7",n:"Stubbs, Trace",t:"ASR",s:"33.51"}, {l:"8",n:"Buntin, Tice",t:"JIS",s:"34.27"}, {l:"9",n:"Umbaugh, Nicholas",t:"ACM",s:"35.76"}, {l:"10",n:"Sosa, Oliver",t:"HAN",s:"37.67"}] },
+        { label: "3 of 9", entries: [{l:"1",n:"Hackler, Edward",t:"ACM",s:"32.16"}, {l:"2",n:"Breneman, Lennon",t:"GMC",s:"31.59"}, {l:"3",n:"Chen, Roger",t:"ACM",s:"31.38"}, {l:"4",n:"Bennett, Raymond",t:"ASR",s:"30.55"}, {l:"5",n:"Olson, Dom",t:"ASR",s:"30.38"}, {l:"6",n:"Coppins, Aidyn",t:"GMC",s:"30.50"}, {l:"7",n:"De Dios, Xyden",t:"CBY",s:"30.72"}, {l:"8",n:"Anderson, Knox",t:"PSM",s:"31.39"}, {l:"9",n:"Malizia, Mason",t:"ASR",s:"31.67"}, {l:"10",n:"Pertuz, Kevin",t:"ASR",s:"32.24"}] },
+        { label: "4 of 9", entries: [{l:"1",n:"Pulsifer, Emmitt",t:"ACM",s:"30.14"}, {l:"2",n:"Truman, Troy",t:"JIS",s:"30.02"}, {l:"3",n:"Bowen-Knowles, Ruben",t:"JIS",s:"29.98"}, {l:"4",n:"Poole, Freddie",t:"GMC",s:"29.19"}, {l:"5",n:"Attebury, Colton",t:"ASR",s:"28.75"}, {l:"6",n:"O'Brien, Luke",t:"JIS",s:"28.93"}, {l:"7",n:"Miller, Evan",t:"ACM",s:"29.45"}, {l:"8",n:"Hoel, Kellan",t:"JIS",s:"29.98"}, {l:"9",n:"Nakvosas, Jakub",t:"FOD",s:"30.04"}, {l:"10",n:"Rubiano, Christian",t:"ASR",s:"30.27"}] },
+        { label: "5 of 9", entries: [{l:"1",n:"Hemingway, Ryan",t:"JIS",s:"28.67"}, {l:"2",n:"Carty Korenbaum, Homey",t:"ASR",s:"28.25"}, {l:"3",n:"Graham, Connor",t:"ACM",s:"27.97"}, {l:"4",n:"George, Wyatt",t:"GMC",s:"27.75"}, {l:"5",n:"De Dios, Zedric",t:"CBY",s:"27.50"}, {l:"6",n:"Frazier, Jace",t:"SUM",s:"27.56"}, {l:"7",n:"Lu, Collin",t:"ACM",s:"27.84"}, {l:"8",n:"Tustin, Cole",t:"ASR",s:"28.07"}, {l:"9",n:"Silky, Michael",t:"ASR",s:"28.52"}, {l:"10",n:"Hinen, Leo",t:"ACM",s:"28.74"}] },
+        { label: "6 of 9", entries: [{l:"1",n:"Ivan, Oliver",t:"ACM",s:"27.33"}, {l:"2",n:"Young, Elliot",t:"ACM",s:"27.18"}, {l:"3",n:"Becker, Will",t:"GMC",s:"26.98"}, {l:"4",n:"Sanders, Sam",t:"ACM",s:"26.78"}, {l:"5",n:"Ball, Lance",t:"GMC",s:"26.69"}, {l:"6",n:"Mester, Ethan",t:"PSM",s:"26.76"}, {l:"7",n:"Gros, Nate",t:"ASR",s:"26.82"}, {l:"8",n:"Norman, Aiden",t:"CBY",s:"27.12"}, {l:"9",n:"Smith, Axton",t:"ASR",s:"27.24"}, {l:"10",n:"Wurzelbacher, Wyatt",t:"JIS",s:"27.37"}] },
+        { label: "7 of 9", entries: [{l:"1",n:"Hannibal, Jamison",t:"ASR",s:"26.55"}, {l:"2",n:"Leon, Jack",t:"ACM",s:"26.40"}, {l:"3",n:"Ruscciolelli, Charlie",t:"ACM",s:"26.06"}, {l:"4",n:"Williams, Kai",t:"ASR",s:"25.80"}, {l:"5",n:"Tilson, Charlie",t:"GMC",s:"25.61"}, {l:"6",n:"Chatman, Emanuel",t:"ASR",s:"25.77"}, {l:"7",n:"Wright, Nathan",t:"ACM",s:"25.97"}, {l:"8",n:"Smith, Henry",t:"ASR",s:"26.15"}, {l:"9",n:"Bryan, Asher",t:"JIS",s:"26.44"}, {l:"10",n:"Northrup, Trig",t:"ACM",s:"26.64"}] },
+        { label: "8 of 9", entries: [{l:"1",n:"Griffin, Cyprian",t:"PSM",s:"25.44"}, {l:"2",n:"Gehman, Isaac",t:"JIS",s:"24.98"}, {l:"3",n:"Fricke, Asa",t:"GMC",s:"24.85"}, {l:"4",n:"Wood, Ryan",t:"SUM",s:"24.68"}, {l:"5",n:"King, Tatham",t:"NMB",s:"24.44"}, {l:"6",n:"Foster, Luke",t:"ASR",s:"24.60"}, {l:"7",n:"Goxhaj, Ethan",t:"OCA",s:"24.73"}, {l:"8",n:"Rosa-Lebron, Michael",t:"OCA",s:"24.94"}, {l:"9",n:"Labib, Yassine",t:"NMB",s:"25.11"}, {l:"10",n:"Cheney, Sebastian",t:"ASR",s:"25.55"}] },
+        { label: "9 of 9", entries: [{l:"1",n:"Sears, Dean",t:"SUM",s:"24.20"}, {l:"2",n:"Fernandez, Angel",t:"JIS",s:"23.51"}, {l:"3",n:"Grillet, Sean",t:"ASR",s:"23.24"}, {l:"4",n:"Stabene, Conrad",t:"OCA",s:"23.06"}, {l:"5",n:"Young, Jimmy",t:"ASR",s:"22.46"}, {l:"6",n:"Menken, Samuel",t:"FOD",s:"22.56"}, {l:"7",n:"Harley, Angus",t:"SUM",s:"23.10"}, {l:"8",n:"Harriott, Connor",t:"SUM",s:"23.26"}, {l:"9",n:"Bergman, Leif",t:"FOD",s:"24.02"}, {l:"10",n:"Byerly, Josiah",t:"SUM",s:"24.22"}] },
+      ] },
+      { num: 9, name: "Girls Open/Senior 100 Butterfly", heats: [
+        { label: "1 of 3", entries: [{l:"4",n:"Landingham, Julia",t:"CBY",s:"1:42.91"}, {l:"5",n:"Arntz, Lila Kate",t:"SUM",s:"1:26.48"}, {l:"6",n:"Yatagan, Ayla",t:"JIS",s:"1:34.83"}] },
+        { label: "2 of 3", entries: [{l:"1",n:"Sutphin, Emma",t:"CBY",s:"1:24.00"}, {l:"2",n:"Seabrooks, Isaa",t:"SUM",s:"1:19.32"}, {l:"3",n:"Terry, Grayson",t:"ASR",s:"1:16.57"}, {l:"4",n:"Trezies, Elin",t:"ACM",s:"1:14.54"}, {l:"5",n:"Arnold, Bowen",t:"ACM",s:"1:11.89"}, {l:"6",n:"Rosiak, Libby",t:"PSM",s:"1:11.96"}, {l:"7",n:"Averitt, Sadie",t:"NMB",s:"1:14.90"}, {l:"8",n:"Patterson, Abbigale",t:"GMC",s:"1:18.58"}, {l:"9",n:"Crawford, Lorelie",t:"ASR",s:"1:20.14"}] },
+        { label: "3 of 3", entries: [{l:"1",n:"Jackowski, Cecilia",t:"ASR",s:"1:10.15"}, {l:"2",n:"Bleyer, Cecilia",t:"NMB",s:"1:08.54"}, {l:"3",n:"Lee, Eryn",t:"OCA",s:"1:05.88"}, {l:"4",n:"Reilly, Dakota",t:"OCA",s:"1:05.57"}, {l:"5",n:"Degeorge, Madeline",t:"CBY",s:"59.75"}, {l:"6",n:"Baker, Maryella",t:"NMB",s:"1:04.34"}, {l:"7",n:"Casa, Callie",t:"ASR",s:"1:05.58"}, {l:"8",n:"Schady, Julia",t:"ACM",s:"1:08.22"}, {l:"9",n:"Galvin, Moxie-Jo",t:"ACM",s:"1:08.83"}, {l:"10",n:"Noble, Ella",t:"CBY",s:"1:10.60"}] },
+      ] },
+      { num: 10, name: "Boys Open/Senior 100 Butterfly", heats: [
+        { label: "1 of 3", entries: [{l:"4",n:"Griffin, Cyprian",t:"PSM",s:"1:12.66"}, {l:"5",n:"Evans, Nickolas",t:"JIS",s:"1:09.02"}, {l:"6",n:"Parnell, Sawyer",t:"NMB",s:"1:10.60"}] },
+        { label: "2 of 3", entries: [{l:"1",n:"Marchenko, Lucas",t:"ASR",s:"1:05.13"}, {l:"2",n:"Breneman, Ashton",t:"GMC",s:"1:04.58"}, {l:"3",n:"Menken, Christen",t:"FOD",s:"1:03.78"}, {l:"4",n:"Cziraki, Chris",t:"NMB",s:"1:03.17"}, {l:"5",n:"Williams, Kanius",t:"GMC",s:"1:02.02"}, {l:"6",n:"Plotnikov, Daniel",t:"NMB",s:"1:02.26"}, {l:"7",n:"Gonzalez-Medina, Santiago",t:"CBY",s:"1:03.57"}, {l:"8",n:"Diaz Lanz, Santiago",t:"CBY",s:"1:04.10"}, {l:"9",n:"Ye, Yidong",t:"ACM",s:"1:04.78"}, {l:"10",n:"Wright, Nathan",t:"ACM",s:"1:07.98"}] },
+        { label: "3 of 3", entries: [{l:"1",n:"Chatman, Emanuel",t:"ASR",s:"1:01.74"}, {l:"2",n:"Shamblin, Hunter",t:"GMC",s:"59.77"}, {l:"3",n:"OKeefe, Owen",t:"ASR",s:"57.51"}, {l:"4",n:"Menken, Samuel",t:"FOD",s:"56.99"}, {l:"5",n:"Aikman, Keith",t:"ACM",s:"56.52"}, {l:"6",n:"Bergman, Leif",t:"FOD",s:"56.90"}, {l:"7",n:"Jarrard, Jackson",t:"ASR",s:"57.05"}, {l:"8",n:"Sabbagh, Vincent",t:"ACM",s:"58.35"}, {l:"9",n:"Rosa-Lebron, Michael",t:"OCA",s:"1:00.63"}, {l:"10",n:"Campana, Anderson",t:"FOD",s:"1:02.00"}] },
+      ] },
+      { num: 11, name: "Girls Open/Senior 100 Freestyle", heats: [
+        { label: "1 of 7", entries: [{l:"1",n:"Hills, MJ",t:"ASR",s:"NT"}, {l:"2",n:"Causey, Camila",t:"ACM",s:"NT"}, {l:"3",n:"Lee, Jackie",t:"STL",s:"2:07.58"}, {l:"4",n:"Moseley, Brynlee",t:"SUM",s:"1:30.88"}, {l:"5",n:"White, Livy",t:"OCA",s:"1:28.95"}, {l:"6",n:"Wagner, Lillie",t:"JIS",s:"1:30.43"}, {l:"7",n:"Ellman, Jackie",t:"STL",s:"1:33.55"}, {l:"8",n:"Hamlett, Mary Beth",t:"GMC",s:"1:17.94S"}, {l:"9",n:"Smith, Hadley",t:"ASR",s:"NT"}, {l:"10",n:"Babb, Michela",t:"CBY",s:"NT"}] },
+        { label: "2 of 7", entries: [{l:"1",n:"Marchenko, Natasha",t:"ASR",s:"1:28.44"}, {l:"2",n:"Murphy, Natalie",t:"ASR",s:"1:25.93"}, {l:"3",n:"Rachman, Fiona",t:"ACM",s:"1:24.66"}, {l:"4",n:"Strickland, Maddie",t:"CBY",s:"1:22.83"}, {l:"5",n:"Barber, Catherine",t:"ACM",s:"1:21.45"}, {l:"6",n:"Crosby, Annabelle",t:"HAN",s:"1:22.64"}, {l:"7",n:"Goodwin, Molly",t:"ACM",s:"1:24.07"}, {l:"8",n:"Silky, Madeline",t:"ASR",s:"1:25.27"}, {l:"9",n:"Converse, April",t:"GMC",s:"1:26.10"}, {l:"10",n:"Rachman, Vivian",t:"ACM",s:"1:28.59"}] },
+        { label: "3 of 7", entries: [{l:"1",n:"Osgood, Bella",t:"ACM",s:"1:19.39"}, {l:"2",n:"Pertuz, Jaidelyn",t:"ASR",s:"1:17.89"}, {l:"3",n:"Oakman, Maggie",t:"ACM",s:"1:17.54"}, {l:"4",n:"Sims, Penny",t:"ACM",s:"1:17.19"}, {l:"5",n:"Wheelon, Elizabeth",t:"ACM",s:"1:15.12"}, {l:"6",n:"Cushing, Savannah",t:"HAN",s:"1:16.45"}, {l:"7",n:"Harris, Meira",t:"ACM",s:"1:17.24"}, {l:"8",n:"Falconer, Sophia",t:"CBY",s:"1:17.62"}, {l:"9",n:"Byerly, Annika",t:"SUM",s:"1:18.43"}, {l:"10",n:"Truman, Betsy",t:"JIS",s:"1:19.98"}] },
+        { label: "4 of 7", entries: [{l:"1",n:"Hill, Lilianna",t:"HAN",s:"1:14.40"}, {l:"2",n:"Yearby, Magdiel",t:"CBY",s:"1:13.41"}, {l:"3",n:"Leonardi, Willa",t:"JIS",s:"1:12.55"}, {l:"4",n:"Parcel, Ella",t:"NMB",s:"1:12.22"}, {l:"5",n:"Sprouse, Elizabeth",t:"ACM",s:"1:11.85"}, {l:"6",n:"Childers, Katie",t:"ACM",s:"1:12.07"}, {l:"7",n:"Casa, Chloe",t:"ASR",s:"1:12.51"}, {l:"8",n:"Gibson, Madison",t:"FOD",s:"1:13.33"}, {l:"9",n:"Grimsley, Kendall",t:"ACM",s:"1:14.00"}, {l:"10",n:"Traugott, Brooks",t:"ACM",s:"1:14.78"}] },
+        { label: "5 of 7", entries: [{l:"1",n:"Chrien, Laura",t:"FOD",s:"1:11.58"}, {l:"2",n:"Soler, Eleanor",t:"ACM",s:"1:09.18"}, {l:"3",n:"Tang, Catherine",t:"ACM",s:"1:08.84"}, {l:"4",n:"Scarano, Coco",t:"SUM",s:"1:08.57"}, {l:"5",n:"Maggio, Angela",t:"NMB",s:"1:07.60"}, {l:"6",n:"Clark, Mercedes",t:"ACM",s:"1:07.66"}, {l:"7",n:"Gore, Braylen",t:"CBY",s:"1:08.72"}, {l:"8",n:"Crosby, Aldret",t:"SUM",s:"1:09.09"}, {l:"9",n:"Gillespie, Elsie",t:"ACM",s:"1:10.54"}, {l:"10",n:"Livingston, Anna",t:"ASR",s:"1:11.58"}] },
+        { label: "6 of 7", entries: [{l:"1",n:"Hughey, Greta",t:"OCA",s:"1:07.33"}, {l:"2",n:"Benardot, Eva",t:"PSM",s:"1:06.15"}, {l:"3",n:"Tatzel, Tiffani",t:"ACM",s:"1:04.86"}, {l:"4",n:"Walsh, Robyn",t:"NMB",s:"1:03.51"}, {l:"5",n:"Averitt, Skyleigh",t:"NMB",s:"1:02.79"}, {l:"6",n:"Barnes, Linh",t:"FOD",s:"1:03.45"}, {l:"7",n:"Anderson, Savannah",t:"ASR",s:"1:04.15"}, {l:"8",n:"Shmilovich, Nurit",t:"ACM",s:"1:05.60"}, {l:"9",n:"Garcia, Vanessa",t:"ASR",s:"1:07.29"}, {l:"10",n:"Burch, Ellieotte",t:"JIS",s:"1:07.43"}] },
+        { label: "7 of 7", entries: [{l:"1",n:"Walsh, Ravyn",t:"NMB",s:"1:01.23"}, {l:"2",n:"Casa, Callie",t:"ASR",s:"1:00.51"}, {l:"3",n:"Goad, Charlotte",t:"GMC",s:"59.42"}, {l:"4",n:"Walker, Kail",t:"ASR",s:"57.93"}, {l:"5",n:"Stephen, Mia",t:"CBY",s:"56.01"}, {l:"6",n:"Connors, Charlotte",t:"ACM",s:"57.67"}, {l:"7",n:"Muldrow, Jayla",t:"BEY",s:"58.98"}, {l:"8",n:"Sapko, Grace",t:"ASR",s:"59.86"}, {l:"9",n:"Whipkey, Leah",t:"ACM",s:"1:00.86"}, {l:"10",n:"Martin, Anika",t:"ACM",s:"1:01.48"}] },
+      ] },
+      { num: 12, name: "Boys Open/Senior 100 Freestyle", heats: [
+        { label: "1 of 8", entries: [{l:"1",n:"Herschler, Elijah",t:"CBY",s:"NT"}, {l:"2",n:"Hemingway, Ryan",t:"JIS",s:"NT"}, {l:"3",n:"Rubiano, Christian",t:"ASR",s:"NT"}, {l:"4",n:"Olson, Dom",t:"ASR",s:"NT"}, {l:"5",n:"Ball, Lance",t:"GMC",s:"1:07.19S"}, {l:"6",n:"Salle, Luke",t:"GMC",s:"1:33.00S"}, {l:"7",n:"Taylor, Landon",t:"OCA",s:"NT"}, {l:"8",n:"White, Jake",t:"GMC",s:"NT"}, {l:"9",n:"Malizia, Mason",t:"ASR",s:"NT"}, {l:"10",n:"Servellon, Lennon",t:"STL",s:"NT"}] },
+        { label: "2 of 8", entries: [{l:"1",n:"Sosa, Oliver",t:"HAN",s:"1:32.04"}, {l:"2",n:"Smith, Lyndon",t:"ACM",s:"1:26.75"}, {l:"3",n:"Umbaugh, Nicholas",t:"ACM",s:"1:24.40"}, {l:"4",n:"Buntin, Tice",t:"JIS",s:"1:20.26"}, {l:"5",n:"Rutland, Elliot",t:"OCA",s:"1:16.06"}, {l:"6",n:"Hoel, Kellan",t:"JIS",s:"1:16.61"}, {l:"7",n:"Hirt, Sully",t:"STL",s:"1:21.78"}, {l:"8",n:"Payne, Malcolm",t:"JIS",s:"1:26.44"}, {l:"9",n:"Baxley, Harry",t:"ACM",s:"1:30.32"}, {l:"10",n:"Fricke, Asa",t:"GMC",s:"1:02.25S"}] },
+        { label: "3 of 8", entries: [{l:"1",n:"Miner, Karsten",t:"ACM",s:"1:15.78"}, {l:"2",n:"De Dios, Xyden",t:"CBY",s:"1:15.03"}, {l:"3",n:"Pertuz, Kevin",t:"ASR",s:"1:12.14"}, {l:"4",n:"Brashear, Paxton",t:"FOD",s:"1:10.32"}, {l:"5",n:"Hall, Deno",t:"GMC",s:"1:09.93"}, {l:"6",n:"Tustin, Cole",t:"ASR",s:"1:10.26"}, {l:"7",n:"Bowen-Knowles, Ruben",t:"JIS",s:"1:12.07"}, {l:"8",n:"Stubbs, Trace",t:"ASR",s:"1:13.16"}, {l:"9",n:"Kwitkin, Ben",t:"CBY",s:"1:15.15"}, {l:"10",n:"Hackler, Edward",t:"ACM",s:"1:15.83"}] },
+        { label: "4 of 8", entries: [{l:"1",n:"Pulsifer, Emmitt",t:"ACM",s:"1:09.68"}, {l:"2",n:"Miller, Evan",t:"ACM",s:"1:08.85"}, {l:"3",n:"Graham, Connor",t:"ACM",s:"1:07.75"}, {l:"4",n:"O'Brien, Luke",t:"JIS",s:"1:05.68"}, {l:"5",n:"Lu, Collin",t:"ACM",s:"1:04.65"}, {l:"6",n:"Smith, Axton",t:"ASR",s:"1:05.49"}, {l:"7",n:"Nakvosas, Jakub",t:"FOD",s:"1:07.21"}, {l:"8",n:"Winograd, Bradley",t:"PSM",s:"1:07.98"}, {l:"9",n:"Poole, Freddie",t:"GMC",s:"1:09.04"}, {l:"10",n:"Chen, Roger",t:"ACM",s:"1:09.85"}] },
+        { label: "5 of 8", entries: [{l:"1",n:"Attebury, Colton",t:"ASR",s:"1:04.15"}, {l:"2",n:"Young, Elliot",t:"ACM",s:"1:03.51"}, {l:"3",n:"Ivan, Oliver",t:"ACM",s:"1:02.59"}, {l:"4",n:"Wurzelbacher, Wyatt",t:"JIS",s:"1:02.38"}, {l:"5",n:"Cheney, Sebastian",t:"ASR",s:"1:02.19"}, {l:"6",n:"Sease, Henry",t:"ACM",s:"1:02.29"}, {l:"7",n:"Hinen, Leo",t:"ACM",s:"1:02.54"}, {l:"8",n:"Velez, Sebi",t:"GMC",s:"1:03.30"}, {l:"9",n:"Mullen, Matthew",t:"ACM",s:"1:03.97"}, {l:"10",n:"Bennett, Raymond",t:"ASR",s:"1:04.18"}] },
+        { label: "6 of 8", entries: [{l:"1",n:"Bryan, Asher",t:"JIS",s:"1:01.70"}, {l:"2",n:"Kramer, Jack",t:"OCA",s:"1:01.09"}, {l:"3",n:"Ruscciolelli, Charlie",t:"ACM",s:"1:00.97"}, {l:"4",n:"Sanders, Sam",t:"ACM",s:"1:00.34"}, {l:"5",n:"Northrup, Trig",t:"ACM",s:"59.90"}, {l:"6",n:"Carty Korenbaum, Homey",t:"ASR",s:"1:00.12"}, {l:"7",n:"Smith, Owen",t:"ASR",s:"1:00.47"}, {l:"8",n:"Leon, Jack",t:"ACM",s:"1:01.03"}, {l:"9",n:"Hannibal, Jamison",t:"ASR",s:"1:01.14"}, {l:"10",n:"Yosinski, Lucas",t:"ASR",s:"1:02.12"}] },
+        { label: "7 of 8", entries: [{l:"1",n:"George, Hank",t:"ASR",s:"59.04"}, {l:"2",n:"Stabene, Conrad",t:"OCA",s:"55.95"}, {l:"3",n:"Butler, Mac",t:"GMC",s:"55.71"}, {l:"4",n:"Goughneour, Lucas",t:"GMC",s:"55.34"}, {l:"5",n:"Kuprel, Gabriel",t:"ACM",s:"55.09"}, {l:"6",n:"Byerly, Josiah",t:"SUM",s:"55.24"}, {l:"7",n:"Sears, Dean",t:"SUM",s:"55.42"}, {l:"8",n:"Labib, Yassine",t:"NMB",s:"55.73"}, {l:"9",n:"Williams, Kai",t:"ASR",s:"57.98"}, {l:"10",n:"Gros, Nate",t:"ASR",s:"59.87"}] },
+        { label: "8 of 8", entries: [{l:"1",n:"Applegate, Dominik",t:"ASR",s:"54.67"}, {l:"2",n:"Goxhaj, Ethan",t:"OCA",s:"54.37"}, {l:"3",n:"De Castro, Ricardo",t:"CBY",s:"52.32"}, {l:"4",n:"Routhier, Finn",t:"ASR",s:"51.10"}, {l:"5",n:"Young, Jimmy",t:"ASR",s:"49.51"}, {l:"6",n:"Grillet, Sean",t:"ASR",s:"50.28"}, {l:"7",n:"Piscitelli, Landen",t:"ASR",s:"51.57"}, {l:"8",n:"Plotnikov, Daniel",t:"NMB",s:"53.64"}, {l:"9",n:"Moran, Will",t:"GMC",s:"54.58"}, {l:"10",n:"King, Tatham",t:"NMB",s:"55.06"}] },
+      ] },
+      { num: 13, name: "Girls Open/Senior 500 Freestyle", heats: [
+        { label: "1 of 2", entries: [{l:"2",n:"Staub, Anae",t:"FOD",s:"6:49.39"}, {l:"3",n:"Edwards, Nora",t:"GMC",s:"6:39.81"}, {l:"4",n:"Ballenger, Alex",t:"OCA",s:"6:38.20"}, {l:"5",n:"Baeli, Christiana",t:"NMB",s:"6:35.10"}, {l:"6",n:"Bowers, Finley",t:"ACM",s:"6:35.28"}, {l:"7",n:"Briggs, Emma",t:"CBY",s:"6:39.00"}, {l:"8",n:"Leonard, Haley",t:"FOD",s:"6:48.23"}] },
+        { label: "2 of 2", entries: [{l:"1",n:"Nolan, Lydia",t:"JIS",s:"6:14.89"}, {l:"2",n:"Watts, Riley",t:"ASR",s:"5:59.74"}, {l:"3",n:"Holland, Reese",t:"OCA",s:"5:58.59"}, {l:"4",n:"Bonacci, Emily",t:"ASR",s:"5:30.52"}, {l:"5",n:"Gwisc, Whitney",t:"ACM",s:"5:22.08"}, {l:"6",n:"Wilson, Ellis",t:"HAN",s:"5:30.00"}, {l:"7",n:"Evans, Sophia",t:"JIS",s:"5:45.98"}, {l:"8",n:"Heinemann, Sarah Gray",t:"ACM",s:"5:59.22"}, {l:"9",n:"DeGeorge, Eva",t:"CBY",s:"6:00.12"}, {l:"10",n:"Terry, Grayson",t:"ASR",s:"6:31.66"}] },
+      ] },
+      { num: 14, name: "Boys Open/Senior 500 Freestyle", heats: [
+        { label: "1 of 2", entries: [{l:"4",n:"Ford, Simon",t:"ACM",s:"6:34.28"}, {l:"5",n:"Pohl, Koa",t:"SUM",s:"5:57.60"}, {l:"6",n:"Fehr, Will",t:"JIS",s:"6:31.59"}, {l:"7",n:"Breneman, Lennon",t:"GMC",s:"NT"}] },
+        { label: "2 of 2", entries: [{l:"1",n:"Knauer, Brayden",t:"ACM",s:"5:52.12"}, {l:"2",n:"Clair, Ian",t:"ACM",s:"5:44.47"}, {l:"3",n:"Wilber, Knox",t:"NMB",s:"5:37.49"}, {l:"4",n:"Hurlbert, John",t:"ASR",s:"5:27.99"}, {l:"5",n:"Velez, Andy",t:"GMC",s:"5:18.02"}, {l:"6",n:"Cheney, Caleb",t:"ASR",s:"5:27.93"}, {l:"7",n:"Coonrod, Henry",t:"ASR",s:"5:30.04"}, {l:"8",n:"Collier, Wade",t:"SUM",s:"5:43.76"}, {l:"9",n:"Menken, Christen",t:"FOD",s:"5:51.12"}, {l:"10",n:"Gonzalez-Medina, Santiago",t:"CBY",s:"5:55.54"}] },
+      ] },
+      { num: 15, name: "Girls Open/Senior 200 Freestyle Relay", heats: [
+        { label: "1 of 2", entries: [{l:"2",n:"Oceanside Collegiate Academy B",t:"OCA",s:"NT"}, {l:"3",n:"Cane Bay High School Swimming B",t:"CBY",s:"2:18.29"}, {l:"4",n:"Fort Dorchester High School B",t:"FOD",s:"2:08.02"}, {l:"5",n:"James Island Charter HS A",t:"JIS",s:"1:56.46"}, {l:"6",n:"North Myrtle Beach A",t:"NMB",s:"1:56.61"}, {l:"7",n:"James Island Charter HS B",t:"JIS",s:"2:09.55"}, {l:"8",n:"Summerville High School B",t:"SUM",s:"NT"}] },
+        { label: "2 of 2", entries: [{l:"1",n:"Greer Middle College Charter H A",t:"GMC",s:"1:53.40"}, {l:"2",n:"Summerville High School A",t:"SUM",s:"1:52.48"}, {l:"3",n:"Philip Simmons High School A",t:"PSM",s:"1:50.99"}, {l:"4",n:"Academic Magnet High School A",t:"ACM",s:"1:47.20"}, {l:"5",n:"Cane Bay High School Swimming A",t:"CBY",s:"1:40.87"}, {l:"6",n:"Ashley Ridge High School A",t:"ASR",s:"1:47.15"}, {l:"7",n:"Oceanside Collegiate Academy A",t:"OCA",s:"1:47.74"}, {l:"8",n:"Ashley Ridge High School B",t:"ASR",s:"1:52.15"}, {l:"9",n:"Academic Magnet High School B",t:"ACM",s:"1:53.37"}, {l:"10",n:"Fort Dorchester High School A",t:"FOD",s:"1:53.55"}] },
+      ] },
+      { num: 16, name: "Boys Open/Senior 200 Freestyle Relay", heats: [
+        { label: "1 of 2", entries: [{l:"4",n:"Academic Magnet High School B",t:"ACM",s:"1:45.88"}, {l:"5",n:"Cane Bay High School Swimming A",t:"CBY",s:"1:42.79"}, {l:"6",n:"Greer Middle College Charter H B",t:"GMC",s:"1:43.05"}, {l:"7",n:"James Island Charter HS B",t:"JIS",s:"1:55.42"}] },
+        { label: "2 of 2", entries: [{l:"1",n:"Philip Simmons High School A",t:"PSM",s:"1:40.64"}, {l:"2",n:"North Myrtle Beach A",t:"NMB",s:"1:39.41"}, {l:"3",n:"Ashley Ridge High School B",t:"ASR",s:"1:37.87"}, {l:"4",n:"Summerville High School A",t:"SUM",s:"1:35.19"}, {l:"5",n:"Academic Magnet High School A",t:"ACM",s:"1:33.21"}, {l:"6",n:"Ashley Ridge High School A",t:"ASR",s:"1:33.37"}, {l:"7",n:"Fort Dorchester High School A",t:"FOD",s:"1:35.54"}, {l:"8",n:"Oceanside Collegiate Academy A",t:"OCA",s:"1:38.88"}, {l:"9",n:"Greer Middle College Charter H A",t:"GMC",s:"1:39.55"}, {l:"10",n:"James Island Charter HS A",t:"JIS",s:"1:41.67"}] },
+      ] },
+      { num: 17, name: "Girls Open/Senior 100 Backstroke", heats: [
+        { label: "1 of 3", entries: [{l:"4",n:"Byerly, Annika",t:"SUM",s:"1:38.88"}, {l:"5",n:"Moree, Lililana",t:"ASR",s:"1:25.41"}, {l:"6",n:"Dutrow, Murphy",t:"JIS",s:"1:32.93"}, {l:"7",n:"Byerly, Lydia",t:"SUM",s:"NT"}] },
+        { label: "2 of 3", entries: [{l:"1",n:"Mester, Maddie",t:"PSM",s:"1:24.59"}, {l:"2",n:"Strickland, Maddie",t:"CBY",s:"1:23.79"}, {l:"3",n:"Frear, Kaitlyn",t:"JIS",s:"1:17.21"}, {l:"4",n:"Menken, Rose",t:"FOD",s:"1:14.88"}, {l:"5",n:"Ansley, Mia",t:"ACM",s:"1:12.32"}, {l:"6",n:"Livingston, Anna",t:"ASR",s:"1:13.45"}, {l:"7",n:"Riley, McKenzie",t:"SUM",s:"1:16.46"}, {l:"8",n:"Gore, Braylen",t:"CBY",s:"1:18.38"}, {l:"9",n:"Scarano, Coco",t:"SUM",s:"1:24.03"}, {l:"10",n:"Hyatt-Eakes, Pluma",t:"ACM",s:"1:24.87"}] },
+        { label: "3 of 3", entries: [{l:"1",n:"Christie, Aria",t:"ASR",s:"1:10.99"}, {l:"2",n:"Sapko, Grace",t:"ASR",s:"1:10.81"}, {l:"3",n:"Evans, Sophia",t:"JIS",s:"1:08.54"}, {l:"4",n:"Whipkey, Leah",t:"ACM",s:"1:07.28"}, {l:"5",n:"Torek, Avery",t:"FOD",s:"1:03.69"}, {l:"6",n:"Bleyer, Cecilia",t:"NMB",s:"1:06.26"}, {l:"7",n:"Walsh, Ravyn",t:"NMB",s:"1:08.26"}, {l:"8",n:"Patterson, Maggie",t:"GMC",s:"1:08.92"}, {l:"9",n:"Bonavita, Charlee",t:"ACM",s:"1:10.93"}, {l:"10",n:"Averitt, Skyleigh",t:"NMB",s:"1:11.82"}] },
+      ] },
+      { num: 18, name: "Boys Open/Senior 100 Backstroke", heats: [
+        { label: "1 of 3", entries: [{l:"3",n:"Hirt, Sully",t:"STL",s:"1:27.60"}, {l:"4",n:"Ball, Evan",t:"GMC",s:"1:22.57"}, {l:"5",n:"Kramer, Jack",t:"OCA",s:"1:16.14"}, {l:"6",n:"Anderson, Knox",t:"PSM",s:"1:18.77"}, {l:"7",n:"Kwitkin, Ben",t:"CBY",s:"1:25.00"}, {l:"8",n:"Servellon, Lennon",t:"STL",s:"NT"}] },
+        { label: "2 of 3", entries: [{l:"1",n:"Brashear, Paxton",t:"FOD",s:"1:14.36"}, {l:"2",n:"De Dios, Zedric",t:"CBY",s:"1:11.94"}, {l:"3",n:"Ye, Yidong",t:"ACM",s:"1:08.03"}, {l:"4",n:"Kuprel, Gabriel",t:"ACM",s:"1:07.43"}, {l:"5",n:"Thurmond, Hollis",t:"ACM",s:"1:05.50"}, {l:"6",n:"Smith, Owen",t:"ASR",s:"1:06.21"}, {l:"7",n:"Diaz Lanz, Santiago",t:"CBY",s:"1:07.71"}, {l:"8",n:"Rhem, Thad",t:"JIS",s:"1:09.98"}, {l:"9",n:"Becker, Will",t:"GMC",s:"1:13.83"}, {l:"10",n:"Norman, Aiden",t:"CBY",s:"1:14.90"}] },
+        { label: "3 of 3", entries: [{l:"1",n:"Silky, Michael",t:"ASR",s:"1:05.01"}, {l:"2",n:"Coonrod, Henry",t:"ASR",s:"1:04.88"}, {l:"3",n:"Goughneour, Lucas",t:"GMC",s:"1:01.41"}, {l:"4",n:"Campana, Anderson",t:"FOD",s:"59.29"}, {l:"5",n:"Patterson, Logan",t:"ACM",s:"54.22"}, {l:"6",n:"Harley, Angus",t:"SUM",s:"56.72"}, {l:"7",n:"Harriott, Connor",t:"SUM",s:"1:00.17"}, {l:"8",n:"Guare, Declan",t:"SUM",s:"1:03.66"}, {l:"9",n:"Wood, Ryan",t:"SUM",s:"1:04.96"}, {l:"10",n:"Smith, Henry",t:"ASR",s:"1:05.35"}] },
+      ] },
+      { num: 19, name: "Girls Open/Senior 100 Breaststroke", heats: [
+        { label: "1 of 3", entries: [{l:"2",n:"Case, Addison",t:"SUM",s:"1:52.57"}, {l:"3",n:"Sutphin, Emma",t:"CBY",s:"1:34.81"}, {l:"4",n:"Wallman, Vander",t:"OCA",s:"1:31.34"}, {l:"5",n:"Benardot, Eva",t:"PSM",s:"1:29.90"}, {l:"6",n:"Hayward, London",t:"BEY",s:"1:30.98"}, {l:"7",n:"Hughey, Greta",t:"OCA",s:"1:32.21"}, {l:"8",n:"Rankin, Marlowe",t:"GMC",s:"1:40.00"}, {l:"9",n:"Poole, Emmy",t:"PSM",s:"1:52.63"}] },
+        { label: "2 of 3", entries: [{l:"1",n:"Barnes, Linh",t:"FOD",s:"1:28.77"}, {l:"2",n:"Wagner, Annabelle",t:"JIS",s:"1:27.76"}, {l:"3",n:"Galvin, Moxie-Jo",t:"ACM",s:"1:27.43"}, {l:"4",n:"Casa, Chloe",t:"ASR",s:"1:25.12"}, {l:"5",n:"Nolan, Lydia",t:"JIS",s:"1:21.40"}, {l:"6",n:"Hinkle, Jillian",t:"CBY",s:"1:23.85"}, {l:"7",n:"Averitt, Sadie",t:"NMB",s:"1:25.56"}, {l:"8",n:"McManus, Raegan",t:"FOD",s:"1:27.62"}, {l:"9",n:"Hibler, Arlyn",t:"ACM",s:"1:28.48"}, {l:"10",n:"Smith, Lainee",t:"NMB",s:"1:29.78"}] },
+        { label: "3 of 3", entries: [{l:"1",n:"Russell, Ruth",t:"ACM",s:"1:19.69"}, {l:"2",n:"Cardella, Priya",t:"ACM",s:"1:18.76"}, {l:"3",n:"Jackowski, Cecilia",t:"ASR",s:"1:15.61"}, {l:"4",n:"Noble, Ava",t:"CBY",s:"1:14.41"}, {l:"5",n:"Degeorge, Madeline",t:"CBY",s:"1:07.99"}, {l:"6",n:"Gerber, Arabella",t:"ASR",s:"1:13.16"}, {l:"7",n:"Kabealo, Harper",t:"ASR",s:"1:15.16"}, {l:"8",n:"Kelly, Ashlynn",t:"SUM",s:"1:17.74"}, {l:"9",n:"Lindblad, Alice",t:"GMC",s:"1:19.23"}, {l:"10",n:"Dutrow, Neve",t:"JIS",s:"1:20.94"}] },
+      ] },
+      { num: 20, name: "Boys Open/Senior 100 Breaststroke", heats: [
+        { label: "1 of 3", entries: [{l:"4",n:"Horne, Justen",t:"GMC",s:"1:40.28S"}, {l:"5",n:"Coppins, Aidyn",t:"GMC",s:"1:32.14"}, {l:"6",n:"Garcia, Landon",t:"FOD",s:"1:37.81"}] },
+        { label: "2 of 3", entries: [{l:"2",n:"Truman, Troy",t:"JIS",s:"1:25.71"}, {l:"3",n:"Evans, Nickolas",t:"JIS",s:"1:16.09"}, {l:"4",n:"De Dios, Iain",t:"CBY",s:"1:13.53"}, {l:"5",n:"Knauer, Brayden",t:"ACM",s:"1:11.68"}, {l:"6",n:"Marchenko, Lucas",t:"ASR",s:"1:12.31"}, {l:"7",n:"Koster, Alex",t:"ACM",s:"1:13.84"}, {l:"8",n:"Hovey, Gibson",t:"CBY",s:"1:21.40"}, {l:"9",n:"Frazier, Jace",t:"SUM",s:"1:26.23"}] },
+        { label: "3 of 3", entries: [{l:"1",n:"Tilson, Charlie",t:"GMC",s:"1:10.83"}, {l:"2",n:"Ford, Simon",t:"ACM",s:"1:08.82"}, {l:"3",n:"Connors, FInley",t:"ACM",s:"1:05.61"}, {l:"4",n:"Williams, Kanius",t:"GMC",s:"1:04.81"}, {l:"5",n:"Gladis, Karter",t:"ASR",s:"57.22"}, {l:"6",n:"Piscitelli, Landen",t:"ASR",s:"1:03.94"}, {l:"7",n:"Fernandez, Angel",t:"JIS",s:"1:05.42"}, {l:"8",n:"Foster, Luke",t:"ASR",s:"1:06.64"}, {l:"9",n:"Gehman, Isaac",t:"JIS",s:"1:09.03"}, {l:"10",n:"Cziraki, Chris",t:"NMB",s:"1:11.48"}] },
+      ] },
+      { num: 21, name: "Girls Open/Senior 400 Freestyle Relay", heats: [
+        { label: "1 of 2", entries: [{l:"4",n:"Cane Bay High School Swimming B",t:"CBY",s:"5:04.06"}, {l:"5",n:"Fort Dorchester High School A",t:"FOD",s:"4:44.31"}, {l:"6",n:"James Island Charter HS B",t:"JIS",s:"5:02.83"}] },
+        { label: "2 of 2", entries: [{l:"1",n:"Summerville High School A",t:"SUM",s:"4:29.12"}, {l:"2",n:"James Island Charter HS A",t:"JIS",s:"4:16.43"}, {l:"3",n:"Ashley Ridge High School B",t:"ASR",s:"4:05.15"}, {l:"4",n:"Academic Magnet High School A",t:"ACM",s:"3:57.86"}, {l:"5",n:"Cane Bay High School Swimming A",t:"CBY",s:"3:43.54"}, {l:"6",n:"Ashley Ridge High School A",t:"ASR",s:"3:55.98"}, {l:"7",n:"North Myrtle Beach A",t:"NMB",s:"4:03.91"}, {l:"8",n:"Academic Magnet High School B",t:"ACM",s:"4:05.97"}, {l:"9",n:"Greer Middle College Charter H A",t:"GMC",s:"4:17.62"}] },
+      ] },
+      { num: 22, name: "Boys Open/Senior 400 Freestyle Relay", heats: [
+        { label: "1 of 2", entries: [{l:"4",n:"James Island Charter HS B",t:"JIS",s:"4:21.94"}, {l:"5",n:"James Island Charter HS A",t:"JIS",s:"3:55.60"}, {l:"6",n:"Greer Middle College Charter H B",t:"GMC",s:"4:04.61"}] },
+        { label: "2 of 2", entries: [{l:"2",n:"Summerville High School A",t:"SUM",s:"3:45.28"}, {l:"3",n:"Cane Bay High School Swimming A",t:"CBY",s:"3:43.05"}, {l:"4",n:"Academic Magnet High School B",t:"ACM",s:"3:36.97"}, {l:"5",n:"Academic Magnet High School A",t:"ACM",s:"3:28.70"}, {l:"6",n:"Ashley Ridge High School A",t:"ASR",s:"3:29.15"}, {l:"7",n:"Ashley Ridge High School B",t:"ASR",s:"3:40.01"}, {l:"8",n:"North Myrtle Beach A",t:"NMB",s:"3:43.82"}, {l:"9",n:"Greer Middle College Charter H A",t:"GMC",s:"3:47.40"}] },
+      ] },
+    ]
+  };
+
+  var SEATING = {
+    note: "Section 1 and 2 seating is for spectators.",
+    warmup: [
+      { label: "Group 1", time: "8:00\u20138:25 AM", comp: [["1","Cane Bay"], ["2","Cane Bay"], ["3","Cane Bay/Berkeley"], ["4","Fort Dorchester"], ["5","Fort Dorchester"], ["6","Fort Dorchester"], ["7","Stall"], ["8","Summerville"], ["9","Summerville"], ["10","Summerville"]], warmdown: [["1","Ashley Ridge"], ["2","Ashley Ridge"], ["3","Ashley Ridge"], ["4","Ashley Ridge"], ["5","Hanahan"], ["6","Magnet"], ["7","Magnet"], ["8","Magnet"], ["9","Magnet"], ["10","Magnet"]] },
+      { label: "Group 2", time: "8:25\u20138:50 AM", comp: [["1","Greer Middle College"], ["2","Greer Middle College"], ["3","Greer Middle College"], ["4","Greer Middle College"], ["5","Myrtle Beach"], ["6","Myrtle Beach"], ["7","Myrtle Beach"], ["8","James Island"], ["9","James Island"], ["10","James Island"]], warmdown: [["1","North Myrtle Beach"], ["2","North Myrtle Beach"], ["3","North Myrtle Beach"], ["4","North Myrtle Beach"], ["5","Philip Simmons"], ["6","Philip Simmons"], ["7","Philip Simmons"], ["8","Oceanside"], ["9","Oceanside"], ["10","Oceanside"]] },
+    ],
+    seating: [
+      { section: "3", row: "1", school: "James Island", gmc: false },
+      { section: "3", row: "2", school: "James Island", gmc: false },
+      { section: "3", row: "3", school: "James Island", gmc: false },
+      { section: "3", row: "4", school: "Academic Magnet", gmc: false },
+      { section: "3", row: "5", school: "Academic Magnet", gmc: false },
+      { section: "3", row: "6", school: "Academic Magnet", gmc: false },
+      { section: "3", row: "7", school: "Academic Magnet", gmc: false },
+      { section: "3", row: "8", school: "Philip Simmons", gmc: false },
+      { section: "3", row: "9", school: "Myrtle Beach / Philip Simmons", gmc: false },
+      { section: "3", row: "10", school: "Myrtle Beach", gmc: false },
+      { section: "3", row: "11", school: "Myrtle Beach", gmc: false },
+      { section: "4", row: "1", school: "Summerville", gmc: false },
+      { section: "4", row: "2", school: "Summerville", gmc: false },
+      { section: "4", row: "3", school: "Oceanside", gmc: false },
+      { section: "4", row: "4", school: "Oceanside", gmc: false },
+      { section: "4", row: "5", school: "Greer Middle College", gmc: true },
+      { section: "4", row: "6", school: "Greer Middle College", gmc: true },
+      { section: "4", row: "7", school: "North Myrtle Beach", gmc: false },
+      { section: "4", row: "8", school: "North Myrtle Beach", gmc: false },
+      { section: "4", row: "9", school: "Cane Bay / Berkeley", gmc: false },
+      { section: "4", row: "10", school: "Cane Bay", gmc: false },
+      { section: "4", row: "11", school: "Cane Bay", gmc: false },
+      { section: "5", row: "", school: "Fort Dorchester", gmc: false },
+      { section: "5", row: "", school: "Fort Dorchester", gmc: false },
+      { section: "6", row: "", school: "Stall / Hanahan", gmc: false },
+      { section: "6", row: "", school: "Ashley Ridge", gmc: false },
+      { section: "7", row: "", school: "Ashley Ridge", gmc: false },
+      { section: "7", row: "", school: "Ashley Ridge", gmc: false },
+    ]
+  };
+
+  function renderHeatSheet() {
+    var root = document.getElementById("heats-app");
+    if (!root || root.dataset.rendered) return;
+    root.dataset.rendered = "1";
+
+    var label = el("div", "day-label");
+    label.appendChild(el("span", null, "HEAT SHEET"));
+    root.appendChild(label);
+
+    var schedCard = el("article", "stop");
+    schedCard.style.setProperty("--c", "var(--c-red)");
+    schedCard.style.setProperty("--c-soft", "var(--c-red-soft)");
+    var sHead = el("div", "head");
+    sHead.appendChild(el("div", "time", "Session 1 \u00b7 Saturday, September 12, 9:00 AM"));
+    sHead.appendChild(el("h2", null, "2026 Rock the Block Invitational"));
+    sHead.appendChild(el("p", "place", "Meet Program \u2014 order of events"));
+    schedCard.appendChild(sHead);
+    var schedTable = el("table", "sched-table");
+    var schedBody = el("tbody");
+    HEATSHEET.schedule.forEach(function (row) {
+      var tr = el("tr");
+      if (row.brk) {
+        tr.className = "brk";
+        var td = el("td");
+        td.colSpan = 3;
+        td.textContent = row.time + " \u2014 " + row.brk;
+        tr.appendChild(td);
+      } else {
+        tr.appendChild(el("td", "t", row.time));
+        tr.appendChild(el("td", null, "Event " + row.evt + " \u2014 " + row.name));
+        tr.appendChild(el("td", "h", row.heats + " heats \u00b7 " + row.entries + " entries"));
+      }
+      schedBody.appendChild(tr);
+    });
+    schedTable.appendChild(schedBody);
+    schedCard.appendChild(schedTable);
+    root.appendChild(schedCard);
+
+    var legend = el("p", "legend");
+    legend.appendChild(document.createTextNode("Team codes: "));
+    Object.keys(TEAM_NAMES).sort().forEach(function (code, i) {
+      if (i) legend.appendChild(document.createTextNode("  \u00b7  "));
+      var b = el("b", null, code);
+      legend.appendChild(b);
+      legend.appendChild(document.createTextNode(" " + TEAM_NAMES[code]));
+    });
+    root.appendChild(legend);
+
+    HEATSHEET.events.forEach(function (ev) {
+      var gmcCount = 0;
+      ev.heats.forEach(function (h) {
+        h.entries.forEach(function (en) { if (en.t === "GMC") gmcCount++; });
+      });
+
+      var details = el("details", "event-block");
+      if (gmcCount) details.open = true;
+      var summary = el("summary");
+      summary.appendChild(el("span", "ev-num", "Event " + ev.num));
+      summary.appendChild(el("span", "ev-name", ev.name));
+      if (gmcCount) {
+        summary.appendChild(el("span", "gmc-badge", gmcCount + " GMC"));
+      }
+      details.appendChild(summary);
+
+      ev.heats.forEach(function (h) {
+        details.appendChild(el("h4", "heat-label", "Heat " + h.label));
+        var table = el("table", "heat-table");
+        var body = el("tbody");
+        h.entries.forEach(function (en) {
+          var tr = el("tr");
+          if (en.t === "GMC") tr.className = "gmc-row";
+          tr.appendChild(el("td", "lane", en.l));
+          tr.appendChild(el("td", "name", en.n));
+          var teamTd = el("td", "team-cell");
+          var code = el("span", "team-code", en.t);
+          code.title = TEAM_NAMES[en.t] || en.t;
+          teamTd.appendChild(code);
+          tr.appendChild(teamTd);
+          tr.appendChild(el("td", "time-cell", en.s));
+          body.appendChild(tr);
+        });
+        table.appendChild(body);
+        details.appendChild(table);
+      });
+
+      root.appendChild(details);
+    });
+  }
+
+  function buildLaneTable(title, rows) {
+    var wrap = el("div", "lane-table-wrap");
+    wrap.appendChild(el("h4", "lane-title", title));
+    var table = el("table", "lane-table");
+    var body = el("tbody");
+    rows.forEach(function (r) {
+      var tr = el("tr");
+      if (/greer middle college/i.test(r[1])) tr.className = "gmc-row";
+      tr.appendChild(el("td", "lane-num", r[0]));
+      tr.appendChild(el("td", null, r[1]));
+      body.appendChild(tr);
+    });
+    table.appendChild(body);
+    wrap.appendChild(table);
+    return wrap;
+  }
+
+  function renderSeating() {
+    var root = document.getElementById("seating-app");
+    if (!root || root.dataset.rendered) return;
+    root.dataset.rendered = "1";
+
+    var label = el("div", "day-label");
+    label.appendChild(el("span", null, "SEATING"));
+    root.appendChild(label);
+
+    SEATING.warmup.forEach(function (g) {
+      var card = el("article", "stop");
+      card.style.setProperty("--c", "var(--c-athteal)");
+      card.style.setProperty("--c-soft", "var(--c-athteal-soft)");
+      var head = el("div", "head");
+      head.appendChild(el("div", "time", "Warm-Up Lanes \u00b7 " + g.label + " \u00b7 " + g.time));
+      head.appendChild(el("h2", null, "Warm-Up Lane Assignments"));
+      card.appendChild(head);
+      var cols = el("div", "lane-cols");
+      cols.appendChild(buildLaneTable("Competition Pool", g.comp));
+      cols.appendChild(buildLaneTable("Warm Down Pool", g.warmdown));
+      card.appendChild(cols);
+      root.appendChild(card);
+    });
+
+    var meetingCard = el("article", "stop");
+    meetingCard.style.setProperty("--c", "var(--c-purple)");
+    meetingCard.style.setProperty("--c-soft", "var(--c-purple-soft)");
+    var mHead = el("div", "head");
+    mHead.appendChild(el("div", "time", "8:50 AM"));
+    mHead.appendChild(el("h2", null, "Coaches / Captains Meeting"));
+    meetingCard.appendChild(mHead);
+    root.appendChild(meetingCard);
+
+    var seatCard = el("article", "stop");
+    seatCard.style.setProperty("--c", "var(--c-teal)");
+    seatCard.style.setProperty("--c-soft", "var(--c-teal-soft)");
+    var seatHead = el("div", "head");
+    seatHead.appendChild(el("div", "time", "Spectator Seating"));
+    seatHead.appendChild(el("h2", null, "Seating Chart"));
+    seatHead.appendChild(el("p", "place", SEATING.note));
+    seatCard.appendChild(seatHead);
+    var seatTable = el("table", "seat-table");
+    var thead = el("thead");
+    var htr = el("tr");
+    ["Section", "Row", "School"].forEach(function (h) { htr.appendChild(el("th", null, h)); });
+    thead.appendChild(htr);
+    seatTable.appendChild(thead);
+    var sbody = el("tbody");
+    SEATING.seating.forEach(function (r) {
+      var tr = el("tr");
+      if (r.gmc) tr.className = "gmc-row";
+      tr.appendChild(el("td", null, r.section));
+      tr.appendChild(el("td", null, r.row || "\u2014"));
+      tr.appendChild(el("td", null, r.school));
+      sbody.appendChild(tr);
+    });
+    seatTable.appendChild(sbody);
+    seatCard.appendChild(seatTable);
+    root.appendChild(seatCard);
+  }
+
   function applyFilter(filter) {
     var sections = document.querySelectorAll(".day");
     for (var i = 0; i < sections.length; i++) {
       var s = sections[i];
-      s.hidden = !(filter === "all" || s.dataset.day === filter);
+      var day = s.dataset.day;
+      if (day === "coaches") {
+        s.hidden = !(filter === "coaches" && isCoachesAuthed());
+      } else if (ITINERARY_DAYS.indexOf(day) !== -1) {
+        s.hidden = !(filter === "all" || day === filter);
+      } else {
+        s.hidden = !(filter === day);
+      }
     }
+    var gate = document.getElementById("coaches-gate");
+    if (gate) gate.hidden = !(filter === "coaches" && !isCoachesAuthed());
+
     var tabs = document.querySelectorAll(".tab");
     for (var j = 0; j < tabs.length; j++) {
       var on = tabs[j].dataset.filter === filter;
@@ -485,13 +1036,34 @@
   function initTabs() {
     var saved = "all";
     try { saved = localStorage.getItem("rtb-filter") || "all"; } catch (e) {}
-    if (saved !== "fri" && saved !== "sat") saved = "all";
+    var validSaved = ["fri", "sat", "coaches", "heats", "seating"];
+    if (validSaved.indexOf(saved) === -1) saved = "all";
 
     document.getElementById("tabs").addEventListener("click", function (ev) {
       var t = ev.target.closest(".tab");
       if (t) applyFilter(t.dataset.filter);
     });
     applyFilter(saved);
+  }
+
+  function initCoachesGate() {
+    var form = document.getElementById("coaches-form");
+    var input = document.getElementById("coaches-pass");
+    var error = document.getElementById("coaches-error");
+    if (!form) return;
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      if (input.value === COACHES_PASSWORD) {
+        setCoachesAuthed();
+        error.hidden = true;
+        input.value = "";
+        applyFilter("coaches");
+      } else {
+        error.hidden = false;
+        input.value = "";
+        input.focus();
+      }
+    });
   }
 
   function initInstall() {
@@ -533,7 +1105,10 @@
   }
 
   render();
+  renderHeatSheet();
+  renderSeating();
   initTabs();
+  initCoachesGate();
   initSW();
   initInstall();
 })();
