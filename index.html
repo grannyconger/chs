@@ -270,6 +270,28 @@
     text-align: left; font: bold 0.72rem Arial, Helvetica, sans-serif; text-transform: uppercase;
     letter-spacing: 0.06em; color: var(--dim); padding-bottom: 8px; border-bottom: 2px solid var(--line);
   }
+
+  /* GMC-only toggle */
+  .gmc-toggle {
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+    margin: 0 0 18px; padding: 12px 14px;
+    background: var(--white); border: 2px solid var(--line); border-left: 4px solid var(--athletics-gold);
+    font-size: 0.9rem; color: var(--text); user-select: none;
+  }
+  .gmc-toggle input { width: 18px; height: 18px; accent-color: var(--navy); cursor: pointer; }
+  .gmc-toggle .count { color: var(--dim); font-size: 0.82rem; }
+
+  /* Swimmer summary */
+  .swimmer-card .events-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .swimmer-card .events-table td {
+    padding: 7px 4px; border-top: 1px solid var(--line); font-size: 0.88rem;
+  }
+  .swimmer-card .events-table tr:last-child td { border-bottom: 1px solid var(--line); }
+  .swimmer-card .events-table td.ev { color: var(--dim); white-space: nowrap; width: 26px; }
+  .swimmer-card .events-table td.evname { color: var(--text); }
+  .swimmer-card .events-table td.heat { color: var(--dim); white-space: nowrap; }
+  .swimmer-card .events-table td.lane { text-align: center; color: var(--dim); width: 40px; }
+  .swimmer-card .events-table td.time { text-align: right; font-variant-numeric: tabular-nums; width: 74px; }
 </style>
 </head>
 <body>
@@ -284,6 +306,7 @@
     <button class="tab" data-filter="sat" role="tab" aria-selected="false">Saturday</button>
     <button class="tab" data-filter="heats" role="tab" aria-selected="false">Heats</button>
     <button class="tab" data-filter="seating" role="tab" aria-selected="false">Seating</button>
+    <button class="tab" data-filter="swimmers" role="tab" aria-selected="false">Swimmers</button>
     <button class="tab" data-filter="coaches" role="tab" aria-selected="false">Coaches</button>
   </div>
 
@@ -291,6 +314,7 @@
 
   <div class="day" data-day="heats" hidden><div id="heats-app"></div></div>
   <div class="day" data-day="seating" hidden><div id="seating-app"></div></div>
+  <div class="day" data-day="swimmers" hidden><div id="swimmers-app"></div></div>
 
   <div id="coaches-gate" class="coaches-gate" hidden>
     <p class="gate-label">Enter the coaches password to view this tab.</p>
@@ -850,6 +874,30 @@
     label.appendChild(el("span", null, "HEAT SHEET"));
     root.appendChild(label);
 
+    var gmcTotal = 0;
+    HEATSHEET.events.forEach(function (ev) {
+      ev.heats.forEach(function (h) {
+        h.entries.forEach(function (en) { if (en.t === "GMC") gmcTotal++; });
+      });
+    });
+
+    var toggleLabel = el("label", "gmc-toggle");
+    var toggleInput = document.createElement("input");
+    toggleInput.type = "checkbox";
+    toggleInput.id = "gmc-only-toggle";
+    toggleLabel.appendChild(toggleInput);
+    toggleLabel.appendChild(el("span", null, "Show GMC entries only"));
+    toggleLabel.appendChild(el("span", "count", "(" + gmcTotal + " GMC entries across the sheet)"));
+    root.appendChild(toggleLabel);
+
+    var savedGmcOnly = false;
+    try { savedGmcOnly = localStorage.getItem("rtb-gmc-only") === "1"; } catch (e) {}
+    toggleInput.checked = savedGmcOnly;
+    toggleInput.addEventListener("change", function () {
+      applyGmcOnly(toggleInput.checked);
+      try { localStorage.setItem("rtb-gmc-only", toggleInput.checked ? "1" : "0"); } catch (e) {}
+    });
+
     var schedCard = el("article", "stop");
     schedCard.style.setProperty("--c", "var(--c-red)");
     schedCard.style.setProperty("--c-soft", "var(--c-red-soft)");
@@ -928,6 +976,34 @@
 
       root.appendChild(details);
     });
+
+    if (savedGmcOnly) applyGmcOnly(true);
+  }
+
+  function applyGmcOnly(only) {
+    var blocks = document.querySelectorAll("#heats-app .event-block");
+    for (var i = 0; i < blocks.length; i++) {
+      var block = blocks[i];
+      var hasGmc = block.querySelectorAll(".gmc-row").length > 0;
+      block.hidden = only && !hasGmc;
+      if (block.hidden) continue;
+
+      var tables = block.querySelectorAll(".heat-table");
+      for (var j = 0; j < tables.length; j++) {
+        var table = tables[j];
+        var rows = table.querySelectorAll("tr");
+        var anyVisible = false;
+        for (var k = 0; k < rows.length; k++) {
+          var show = !only || rows[k].classList.contains("gmc-row");
+          rows[k].hidden = !show;
+          if (show) anyVisible = true;
+        }
+        var prev = table.previousElementSibling;
+        if (prev && prev.classList.contains("heat-label")) {
+          prev.hidden = only && !anyVisible;
+        }
+      }
+    }
   }
 
   function buildLaneTable(title, rows) {
@@ -1008,6 +1084,93 @@
     root.appendChild(seatCard);
   }
 
+  function renderSwimmers() {
+    var root = document.getElementById("swimmers-app");
+    if (!root || root.dataset.rendered) return;
+    root.dataset.rendered = "1";
+
+    var label = el("div", "day-label");
+    label.appendChild(el("span", null, "GMC SWIMMERS"));
+    root.appendChild(label);
+
+    root.appendChild(el("p", "meet-note",
+      "Every GMC entry on the heat sheet, grouped by swimmer. Relay lineups aren’t listed " +
+      "by name on the official heat sheet, so relay entries are summarized separately below."));
+
+    var athletes = {};
+    var relays = [];
+    HEATSHEET.events.forEach(function (ev) {
+      ev.heats.forEach(function (h) {
+        h.entries.forEach(function (en) {
+          if (en.t !== "GMC") return;
+          if (en.n.indexOf(",") !== -1) {
+            (athletes[en.n] = athletes[en.n] || []).push({
+              evt: ev.num, name: ev.name, heat: h.label, lane: en.l, time: en.s
+            });
+          } else {
+            relays.push({ evt: ev.num, name: ev.name, heat: h.label, lane: en.l, team: en.n, time: en.s });
+          }
+        });
+      });
+    });
+
+    var names = Object.keys(athletes).sort();
+    root.appendChild(el("p", "legend", names.length + " GMC swimmers with individual entries."));
+
+    names.forEach(function (name) {
+      var events = athletes[name].slice().sort(function (a, b) { return a.evt - b.evt; });
+      var card = el("article", "stop swimmer-card");
+      card.style.setProperty("--c", "var(--c-navy)");
+      card.style.setProperty("--c-soft", "var(--c-navy-soft)");
+      var head = el("div", "head");
+      head.appendChild(el("div", "time", events.length + " event" + (events.length === 1 ? "" : "s")));
+      head.appendChild(el("h2", null, name));
+      card.appendChild(head);
+
+      var table = el("table", "events-table");
+      var body = el("tbody");
+      events.forEach(function (e) {
+        var tr = el("tr");
+        tr.appendChild(el("td", "ev", "Ev " + e.evt));
+        tr.appendChild(el("td", "evname", e.name));
+        tr.appendChild(el("td", "heat", "Heat " + e.heat));
+        tr.appendChild(el("td", "lane", e.lane));
+        tr.appendChild(el("td", "time", e.time));
+        body.appendChild(tr);
+      });
+      table.appendChild(body);
+      card.appendChild(table);
+      root.appendChild(card);
+    });
+
+    if (relays.length) {
+      relays.sort(function (a, b) { return a.evt - b.evt; });
+      var relayCard = el("article", "stop");
+      relayCard.style.setProperty("--c", "var(--c-gold)");
+      relayCard.style.setProperty("--c-soft", "var(--c-gold-soft)");
+      var rHead = el("div", "head");
+      rHead.appendChild(el("div", "time", "Relay Entries"));
+      rHead.appendChild(el("h2", null, "GMC Relay Teams"));
+      rHead.appendChild(el("p", "place", "Swimmer lineups aren’t listed by name on the official heat sheet."));
+      relayCard.appendChild(rHead);
+      var rTable = el("table", "events-table");
+      var rBody = el("tbody");
+      relays.forEach(function (r) {
+        var letter = r.team.trim().split(" ").pop();
+        var tr = el("tr");
+        tr.appendChild(el("td", "ev", "Ev " + r.evt));
+        tr.appendChild(el("td", "evname", r.name + " (" + letter + ")"));
+        tr.appendChild(el("td", "heat", "Heat " + r.heat));
+        tr.appendChild(el("td", "lane", r.lane));
+        tr.appendChild(el("td", "time", r.time));
+        rBody.appendChild(tr);
+      });
+      rTable.appendChild(rBody);
+      relayCard.appendChild(rTable);
+      root.appendChild(relayCard);
+    }
+  }
+
   function applyFilter(filter) {
     var sections = document.querySelectorAll(".day");
     for (var i = 0; i < sections.length; i++) {
@@ -1036,7 +1199,7 @@
   function initTabs() {
     var saved = "all";
     try { saved = localStorage.getItem("rtb-filter") || "all"; } catch (e) {}
-    var validSaved = ["fri", "sat", "coaches", "heats", "seating"];
+    var validSaved = ["fri", "sat", "coaches", "heats", "seating", "swimmers"];
     if (validSaved.indexOf(saved) === -1) saved = "all";
 
     document.getElementById("tabs").addEventListener("click", function (ev) {
@@ -1107,6 +1270,7 @@
   render();
   renderHeatSheet();
   renderSeating();
+  renderSwimmers();
   initTabs();
   initCoachesGate();
   initSW();
